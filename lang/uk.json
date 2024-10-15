@@ -1,0 +1,14 @@
+{
+  "experiment_number": "Номер експерименту",
+  "attempts": "Використано символів",
+  "last_char": "Останній введений символ",
+  "random_text_part": "Довільна частина тексту",
+  "used_chars": "Використані символи",
+  "no_input": "Не було надано жодних даних",
+  "main_input_label": "Ваш символ",
+  "main_input_placeholder": "Оберіть порядок N-грами",
+  "next_button_label": "Наступний експеримент",
+  "reset_button_label": "Скинути",
+  "char_numbers": "символів",
+  "ngram_selector_label": "Порядок N-грами"
+}

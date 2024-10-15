@@ -1,0 +1,14 @@
+{
+  "experiment_number": "Experiment No.",
+  "attempts": "Chars used",
+  "last_char": "Last char",
+  "random_text_part": "Random part from the text",
+  "used_chars": "Already used chars",
+  "no_input": "No input was given",
+  "main_input_label": "Your char",
+  "main_input_placeholder": "Select the order of N-gram",
+  "next_button_label": "Next experiment",
+  "reset_button_label": "Reset",
+  "char_numbers": "chars",
+  "ngram_selector_label": "N-gram order"
+}
