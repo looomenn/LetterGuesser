@@ -6,7 +6,7 @@ import random
 
 import customtkinter as ctk
 
-# ctk.set_appearance_mode('light')
+ctk.set_appearance_mode('light')
 
 # Base colors
 BASE_SURFACE_1 = ('#FFFFFF', '#141414')
@@ -16,10 +16,15 @@ TEXT_PRIMARY = ('#1a1a1a', '#FFFFFF')
 TEXT_SECONDARY = ('#5f5f5f', '#B8B8B8')
 
 # Font
-FONT: str = 'Inter'
+FONT: str = 'Calibri'
 TEXT_BODY_LARGE: int = 18
 TEXT_BODY_MEDIUM: int = 16
 TEXT_BODY_SMALL: int = 14
+
+# Line Height
+TEXT_BODY_SMALL_HEIGHT: int = int(TEXT_BODY_SMALL // 1.4)
+TEXT_BODY_MEDIUM_HEIGHT: int = int(TEXT_BODY_MEDIUM // 1.4)
+TEXT_BODY_LARGE_HEIGHT: int = int(TEXT_BODY_LARGE // 1.4)
 
 # Padding
 PADDING_NONE: int = 0
@@ -31,6 +36,7 @@ PADDING_8: int = 8
 
 # Widgets
 BUTTON_HEIGHT: int = 32
+BUTTON_WIDTH: int = 200
 
 # widget/button/default
 BUTTON_DEFAULT_FG_COLOR = ("#FCFCFC", "#1F2023")
@@ -383,6 +389,7 @@ class OptionMenu(ctk.CTkOptionMenu):
         super().__init__(
             parent,
             height=BUTTON_HEIGHT,
+            width=BUTTON_WIDTH,
             command=command,
             state='normal',
             variable=self.menu_var,
@@ -663,9 +670,165 @@ class LeftFrame(ctk.CTkFrame):
         return [self.cards, self.input_frame, self.status_frame]
 
 
-class RightFrame(ctk.CTkFrame):
-    def __init__(self, parent, **kwargs):
+class ProbabilityTable(ctk.CTkScrollableFrame):
+    def __init__(self,  parent, **kwargs):
         super().__init__(parent, **kwargs)
+
+        self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
+        self.alphabet_len = len(self.alphabet)
+
+        self.attempt_numbers = list(range(1, self.alphabet_len + 1))
+        self.attempts_data = [0] * self.alphabet_len
+        self.attempt_labels: list = []
+        self.labels: list = []
+
+        self.is_data: bool = True  # flag to show/hide absent message
+
+
+        self.placeholder = ctk.CTkLabel(
+            self,
+            text='text-placeholder',
+            height=TEXT_BODY_MEDIUM_HEIGHT,
+            font=ctk.CTkFont(
+                family=FONT,
+                size=TEXT_BODY_MEDIUM
+            ),
+            text_color=TEXT_SECONDARY
+        )
+        bind_localisation(self.placeholder, 'table_placeholder')
+        self.placeholder.grid(row=0, column=0, columnspan=2, sticky='nsew')
+
+        self.init_widgets()
+
+        if self.is_data:
+            self.show_table()
+        else:
+            self.show_placeholder()
+
+    def init_widgets(self):
+
+        # frame title
+        self.title_label = ctk.CTkLabel(
+            self,
+            text='',
+            anchor='w',
+            height=TEXT_BODY_MEDIUM_HEIGHT,
+            font=ctk.CTkFont(
+                family=FONT,
+                size=TEXT_BODY_MEDIUM,
+                weight='bold'
+            )
+        )
+        bind_localisation(self.title_label, 'probability')
+        self.title_label.grid(
+            row=0, column=0, columnspan=2, sticky='ew',
+            padx=PADDING_12, pady=(PADDING_12, PADDING_16)
+        )
+
+        # header for attempts
+        self.header_attempt = ctk.CTkLabel(
+            self,
+            text='',
+            height=TEXT_BODY_SMALL_HEIGHT,
+            font=ctk.CTkFont(
+                family=FONT,
+                size=TEXT_BODY_SMALL
+            )
+        )
+
+        bind_localisation(self.header_attempt, 'attempt')
+        self.header_attempt.grid(
+            row=1, column=0, sticky='ew',
+            padx=PADDING_12, pady=PADDING_8
+        )
+
+        # header for probability
+        self.header_probability = ctk.CTkLabel(
+            self,
+            text='',
+            height=TEXT_BODY_SMALL_HEIGHT,
+            font=ctk.CTkFont(
+                family=FONT,
+                size=TEXT_BODY_SMALL
+            )
+        )
+
+        bind_localisation(self.header_probability, 'probability')
+        self.header_probability.grid(
+            row=1, column=1, sticky='w',
+            padx=(PADDING_NONE, PADDING_8), pady=PADDING_8
+        )
+
+        # placing aka table items
+        for i in range(self.alphabet_len):
+            attempt_label = ctk.CTkLabel(
+                self,
+                text=str(i + 1),
+                anchor='w'
+            )
+            attempt_label.grid(
+                row=i+2, column=0, sticky='w',
+                padx=PADDING_12
+            )
+
+            probability_label = ctk.CTkLabel(
+                self,
+                text=str(self.attempts_data[i]),
+                anchor='w'
+            )
+            probability_label.grid(row=i + 2, column=1, sticky='w')
+
+            self.attempt_labels.append(attempt_label)
+            self.labels.append(probability_label)
+
+    def show_placeholder(self):
+        # showing placeholder
+        self.placeholder.grid()
+
+        # removing table data
+        self.title_label.grid_remove()
+        self.header_attempt.grid_remove()
+        self.header_probability.grid_remove()
+
+        for label in self.labels:
+            label.grid_remove()
+
+        for label in self.attempt_labels:
+            label.grid_remove()
+
+    def show_table(self):
+        # show table
+        self.placeholder.grid_remove()
+
+        self.title_label.grid()
+        self.header_attempt.grid()
+        self.header_probability.grid()
+
+        for row_index, label in enumerate(self.attempt_labels):
+            label.grid(row=row_index + 2, column=0, sticky='w')
+
+        for row_index, label in enumerate(self.labels):
+            label.grid(row=row_index + 2, column=1, sticky='w')
+
+    def update_probability(self, new_data):
+        self.show_table()
+        for i in range(new_data):
+            self.attempts_data[i] = new_data[i]
+            self.labels[i].configure(text=str(new_data[i]))
+
+
+class RightFrame(ctk.CTkFrame):
+    def __init__(self, parent, manager, **kwargs):
+        super().__init__(parent, **kwargs)
+
+        self.configure(fg_color='transparent')
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(1, minsize=PADDING_32)
+        self.columnconfigure((0, 2), weight=0)
+
+        self.probability_table: ProbabilityTable = ProbabilityTable(self)
+        self.probability_table.grid(row=0, column=0, sticky='nsew')
 
 
 class MainFrame(ctk.CTkFrame):
@@ -682,7 +845,7 @@ class MainFrame(ctk.CTkFrame):
         self.left_frame = LeftFrame(self, self.manager)
         self.left_frame.grid(row=0, column=0, sticky='nsew')
 
-        self.right_frame = RightFrame(self, fg_color='purple')
+        self.right_frame = RightFrame(self, self.manager)
         self.right_frame.grid(row=0, column=2, sticky='nsew')
 
         self.manager.load_widgets(self.left_frame.get_widgets())
@@ -885,6 +1048,7 @@ class App(ctk.CTk):
         top = int(display[1] / 2 - APP_SIZE[1] / 2)
         self.geometry(f'{APP_SIZE[0]}x{APP_SIZE[1]}+{left}+{top}')
         self.minsize(APP_SIZE[0], APP_SIZE[1])  # precaution, if resizable(false, false) fails
+        self.maxsize(APP_SIZE[0], APP_SIZE[1])  # precaution, if resizable(false, false) fails
         self.resizable(False, False)
 
         # layout
