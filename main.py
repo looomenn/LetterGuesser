@@ -2,10 +2,18 @@
 import os
 import sys
 import json
+import random
 
 import customtkinter as ctk
 
 # ctk.set_appearance_mode('light')
+
+# Base colors
+BASE_SURFACE_1 = ('#FFFFFF', '#141414')
+BASE_BORDER = ('#E1E1E2', '#3d3d3d')
+BASE_FILL_1 = ('#e1e1e2', "#333333")
+TEXT_PRIMARY = ('#1a1a1a', '#FFFFFF')
+TEXT_SECONDARY = ('#5f5f5f', '#B8B8B8')
 
 # Font
 FONT: str = 'Inter'
@@ -25,27 +33,39 @@ PADDING_8: int = 8
 BUTTON_HEIGHT: int = 32
 
 # widget/button/default
-BUTTON_DEFAULT_FG_COLOR = ("#f6f8fa", "#21252D")
-BUTTON_DEFAULT_FG_COLOR_HOVER = ("#f6f8fa", "#272d35")
-BUTTON_DEFAULT_TEXT = ('#24292f', '#C9D1D9')
-BUTTON_DEFAULT_TEXT_DISABLED = ('#8C959f', '#8B949E')
-BUTTON_DEFAULT_BORDER = ('#D0D7DE', "#30363D")
+BUTTON_DEFAULT_FG_COLOR = ("#FCFCFC", "#1F2023")
+BUTTON_DEFAULT_TEXT = ('#1A1A1A', '#FFFFFF')
+BUTTON_DEFAULT_BORDER = ('#E1E1E2', "#3D3D3D")
+
+BUTTON_DEFAULT_FG_COLOR_HOVER = ("#E1E1E2", "#272d35")
+BUTTON_DEFAULT_BORDER_HOVER = BUTTON_DEFAULT_BORDER
+
+BUTTON_DEFAULT_FG_COLOR_DISABLED = ("#FCFCFC", "#333333")
+BUTTON_DEFAULT_TEXT_DISABLED = ('#CDCDCE', '#585858')
+BUTTON_DEFAULT_BORDER_DISABLED = ('#D0D7DE', "#30363D")
 
 # widget/button/primary
-BUTTON_PRIMARY_FG_COLOR = ("#1F883D", "#238636")
-BUTTON_PRIMARY_FG_COLOR_HOVER = ("#1C8139", "#29903B")
-BUTTON_PRIMARY_FG_COLOR_DISABLED = ("#95D8A6", "#46BF57")
-BUTTON_PRIMARY_TEXT = ('white', 'white')
-BUTTON_PRIMARY_TEXT_DISABLED = ('#eaf7ed', '#A2dfab')
-BUTTON_PRIMARY_BORDER = ('#1f793a', "#38924a")
+BUTTON_PRIMARY_FG_COLOR = ("#2463EB", "#50A1FF")
+BUTTON_PRIMARY_TEXT = ('#FFFFFF', '#141414')
+BUTTON_PRIMARY_BORDER = ('#235ad1', "#65acff")
+
+BUTTON_PRIMARY_FG_COLOR_HOVER = ("#357AE9", "#2C87F6")
+BUTTON_PRIMARY_BORDER_HOVERED = ('#2463EB', "#52A3FF")
+
+BUTTON_PRIMARY_FG_COLOR_DISABLED = ("#F4F4F5", "#333333")
+BUTTON_PRIMARY_TEXT_DISABLED = ('#CDCDCE', '#585858')
+BUTTON_PRIMARY_BORDER_DISABLED = BUTTON_PRIMARY_FG_COLOR_DISABLED
 
 # widget/button/danger
-BUTTON_DANGER_FG_COLOR = BUTTON_DEFAULT_FG_COLOR
-BUTTON_DANGER_FG_COLOR_HOVER = ("#a40e26", "#b62324")
-BUTTON_DANGER_FG_COLOR_DISABLED = BUTTON_DEFAULT_FG_COLOR
-BUTTON_DANGER_TEXT = ('#D1242f', '#f85149')
+BUTTON_DANGER_FG_COLOR = ('#DC2828', '#FF9494')
+BUTTON_DANGER_TEXT = ('#FFFFFF', '#141414')
+BUTTON_DANGER_BORDER = BUTTON_DANGER_FG_COLOR
+
+BUTTON_DANGER_FG_COLOR_HOVER = ("#FF6565", "#FA4D4D")
+BUTTON_DANGER_BORDER_HOVER = BUTTON_DEFAULT_FG_COLOR_HOVER
+
+BUTTON_DANGER_FG_COLOR_DISABLED = ("#F4F4F5", "#333333")
 BUTTON_DANGER_TEXT_DISABLED = ('#e38e94', '#8d3b3b')
-BUTTON_DANGER_BORDER = ('#d0d7de', "#30363d")
 BUTTON_DANGER_BORDER_DISABLED = BUTTON_DEFAULT_FG_COLOR
 
 # App Settings
@@ -82,6 +102,14 @@ def load_language(lang_code) -> None:
     localisation_update()
 
 
+def load_texts(lang_code: str):
+    file_path = get_resource_path(f'texts/{lang_code}.txt')
+
+    with open(file_path, 'r', encoding='utf-8') as file:
+        text_data = file.read()
+    return text_data.replace('\n', '_').replace(' ', '_')
+
+
 def bind_localisation(widget, translation_key, update_method=None) -> None:
     APP_WIDGETS_BINDINGS[widget] = (translation_key, update_method)
     update_widget_localisation(widget)
@@ -100,8 +128,6 @@ def localisation_update():
     for widget in APP_WIDGETS_BINDINGS:
         update_widget_localisation(widget)
 
-    print(APP_CURRENT_LANGUAGE)
-
 
 def get_alphabet(lang_code):
     return 'abcdefghijklmnopqrstuvwxyz ' if lang_code == 'en' else 'йцукенгшщзхїфівапролджєґячсмитьбю '
@@ -110,8 +136,6 @@ def get_alphabet(lang_code):
 class Card(ctk.CTkFrame):
     def __init__(self, parent, label_text, initial_value, localisation_key, var_type='str', **kwargs):
         super().__init__(master=parent, **kwargs)
-
-        print(localisation_key)
 
         self.propagate(False)
         self.configure(width=200, height=72)
@@ -186,10 +210,10 @@ class Cards(ctk.CTkFrame):
         self.experiment_number: Card = Card(self, 'NaN', 0, 'experiment_number', var_type='int')
         self.experiment_number.grid(row=0, column=0, sticky='nsew')
 
-        self.attempt: Card = Card(self, 'Attempt', 'None', 'attempts', var_type='str')
+        self.attempt: Card = Card(self, 'Attempt', '-', 'attempts', var_type='str')
         self.attempt.grid(row=0, column=2, sticky='nsew')
 
-        self.last_char: Card = Card(self, 'Last char', 'None', 'last_char', var_type='str')
+        self.last_char: Card = Card(self, 'Last char', '-', 'last_char', var_type='str')
         self.last_char.grid(row=0, column=4, sticky='nsew')
 
         self.cards = {
@@ -245,10 +269,15 @@ class TextBlockSegment(ctk.CTkFrame):
     def update_value(self, new_value):
         self.text_var.set(new_value)
 
+    def reset(self):
+        bind_localisation(self.text_block, 'no_input', self.update_value)
+
 
 class InputSegment(ctk.CTkFrame):
-    def __init__(self, parent, localisation_label_key, localisation_placeholder_key, is_disabled=False, **kwargs):
+    def __init__(self, parent, manager, localisation_label_key, localisation_placeholder_key, is_disabled=False, **kwargs):
         super().__init__(parent, **kwargs)
+
+        self.manager: ExperimentManager = manager
 
         # remove frame bg
         self.configure(fg_color='transparent')
@@ -297,8 +326,16 @@ class InputSegment(ctk.CTkFrame):
         if is_disabled:
             self.disable_input()
 
+        self.input_field.bind('<Return>', self.input_handler)
+
+    def input_handler(self, event):
+        self.manager.input_handler(self.get_input())
+
     def get_input(self):
         return self.input_var.get()
+
+    def clear(self):
+        self.input_var.set('')
 
     def update_input(self, new_value):
         self.input_var.set(new_value)
@@ -313,8 +350,10 @@ class InputSegment(ctk.CTkFrame):
 
 
 class TopFrame(ctk.CTkFrame):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, manager, **kwargs):
         super().__init__(parent, **kwargs)
+
+        self.manager: ExperimentManager = manager
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
@@ -331,11 +370,11 @@ class TopFrame(ctk.CTkFrame):
     def change_language(self, langauge):
         lang_code = "en" if langauge == 'English' else "uk"
         load_language(lang_code)
+        self.manager.reset_experiment()
 
 
 class OptionMenu(ctk.CTkOptionMenu):
     def __init__(self, parent, localisation_label_key, initial_value, values, command, **kwargs):
-
         self.values = values
         self.loc_key = localisation_label_key
 
@@ -345,12 +384,27 @@ class OptionMenu(ctk.CTkOptionMenu):
             parent,
             height=BUTTON_HEIGHT,
             command=command,
+            state='normal',
             variable=self.menu_var,
+            fg_color=BASE_SURFACE_1,
+            button_color=BASE_SURFACE_1,
+            text_color=TEXT_SECONDARY,
+            button_hover_color=BASE_FILL_1,
             values=[],
             **kwargs
         )
 
+        self.bind('<Enter>', self.on_hover)
+        self.bind('<Leave>', self.on_leave)
         bind_localisation(self, localisation_label_key, self.update_loc)
+
+    def on_hover(self, event):
+        if self.cget('state') == 'normal':
+            self.configure(fg_color=BASE_FILL_1, text_color=TEXT_PRIMARY, button_hover_color=BASE_FILL_1)
+
+    def on_leave(self, event):
+        if self.cget('state') == 'normal':
+            self.configure(fg_color=BASE_SURFACE_1, text_color=TEXT_SECONDARY)
 
     def update_loc(self, text):
         initial_value = self.menu_var.get().split(' ')[0]
@@ -365,7 +419,13 @@ class Button(ctk.CTkButton):
 
         self.style = style
         self.is_disabled = is_disabled
-        self.set_button_style()
+
+        # styles
+        self.fg_color: str | None = None
+        self.text_color: str | None = None
+        self.border_color: str | None = None
+        self.hover_color: str | None = None
+        self.text_color_disabled: str | None = None
 
         super().__init__(
             parent,
@@ -373,59 +433,85 @@ class Button(ctk.CTkButton):
             height=BUTTON_HEIGHT,
             border_width=1,
             command=command,
-            fg_color=self.fg_color,
-            hover_color=self.hover_color,
-            border_color=self.border_color,
-            text_color=self.text_color,
-            text_color_disabled=self.text_color_disabled,
             **kwargs
         )
+
+        self.set_button_style()
 
         if self.is_disabled:
             self.disable_button()
 
         bind_localisation(self, localisation_label_key)
 
+    def set_command(self, function):
+        self.configure(command=function)
+
     def set_button_style(self):
         if self.style == 'default':
-            self.fg_color = BUTTON_DEFAULT_FG_COLOR
-            self.hover_color = BUTTON_DEFAULT_FG_COLOR_HOVER
-            self.border_color = BUTTON_DEFAULT_BORDER
-            self.text_color_disabled = BUTTON_DEFAULT_TEXT_DISABLED
-            self.text_color = BUTTON_DEFAULT_TEXT
-        elif self.style == 'primary':
+            if self.is_disabled:
+                self.fg_color = BUTTON_DEFAULT_FG_COLOR_DISABLED
+                self.border_color = BUTTON_DEFAULT_BORDER_DISABLED
+            else:
+                self.fg_color = BUTTON_DEFAULT_FG_COLOR
+                self.border_color = BUTTON_DEFAULT_BORDER
 
+            self.text_color_disabled = BUTTON_DEFAULT_TEXT_DISABLED
+            self.hover_color = BUTTON_DEFAULT_FG_COLOR_HOVER
+            self.text_color = BUTTON_DEFAULT_TEXT
+
+        elif self.style == 'primary':
             if self.is_disabled:
                 self.fg_color = BUTTON_PRIMARY_FG_COLOR_DISABLED
+                self.border_color = BUTTON_PRIMARY_BORDER_DISABLED
             else:
                 self.fg_color = BUTTON_PRIMARY_FG_COLOR
+                self.border_color = BUTTON_PRIMARY_BORDER
 
             self.text_color_disabled = BUTTON_PRIMARY_TEXT_DISABLED
             self.hover_color = BUTTON_PRIMARY_FG_COLOR_HOVER
-            self.border_color = BUTTON_PRIMARY_BORDER
             self.text_color = BUTTON_PRIMARY_TEXT
 
         elif self.style == 'danger':
+
             if self.is_disabled:
                 self.fg_color = BUTTON_DANGER_FG_COLOR_DISABLED
                 self.border_color = BUTTON_DANGER_BORDER_DISABLED
             else:
                 self.fg_color = BUTTON_DANGER_FG_COLOR
                 self.border_color = BUTTON_DANGER_BORDER
+
             self.text_color_disabled = BUTTON_DANGER_TEXT_DISABLED
             self.hover_color = BUTTON_DANGER_FG_COLOR_HOVER
             self.text_color = BUTTON_DANGER_TEXT
 
+        self.configure(
+            fg_color=self.fg_color,
+            hover_color=self.hover_color,
+            border_color=self.border_color,
+            text_color=self.text_color,
+            text_color_disabled=self.text_color_disabled
+        )
+
+    def get_button_state(self):
+        return self.cget('state')
+
     def enable_button(self):
+        self.is_disabled = False
         self.configure(state='normal')
+        self.set_button_style()
 
     def disable_button(self):
+        self.is_disabled = True
         self.configure(state='disabled')
+        self.set_button_style()
 
 
 class Actions(ctk.CTkFrame):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, manager, **kwargs):
         super().__init__(parent, **kwargs)
+
+        # init manager from the Input Frame
+        self.manager: ExperimentManager = manager
 
         self.configure(fg_color='transparent')
 
@@ -435,10 +521,9 @@ class Actions(ctk.CTkFrame):
 
         self.next_button: Button = Button(
             self,
-            'next_button_label',
-            command=self.next_experiment,
-            style='primary',
-            is_disabled=True
+            'start',
+            command=self.start_experiment,
+            style='primary'
         )
         self.next_button.grid(row=0, column=0, sticky='w')
 
@@ -454,53 +539,69 @@ class Actions(ctk.CTkFrame):
         self.reset_button: Button = Button(
             self,
             'reset_button_label',
-            command=self.next_experiment,
+            command=self.reset_button,
             style='danger',
             is_disabled=False
         )
         self.reset_button.grid(row=0, column=4, sticky='w')
 
-    def next_experiment(self):
-        pass
+        # sending buttons to the manager
+        self.manager.load_buttons([self.next_button, self.ngram_selector, self.reset_button])
+        self.manager.load_actions(self)
+
+    def start_experiment(self):
+        self.ngram_selector.configure(hover=False, state='disabled')
+        self.manager.start_experiment()
 
     def reset_button(self):
-        pass
+        self.ngram_selector.configure(hover=True, state='normal')
+        self.manager.reset_experiment()
 
     def select_ngram(self, value):
-        print(value)
+        self.manager.change_ngram(int(value.split(' ')[0]))
 
 
 class InputFrame(ctk.CTkFrame):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, manager, **kwargs):
         super().__init__(parent, **kwargs)
 
+        # init manager (from the LeftFrame)
+        self.manager: ExperimentManager = manager
+
+        # layout
         self.rowconfigure((0, 2, 4, 6), weight=1)
         self.rowconfigure(1, minsize=PADDING_24)
         self.rowconfigure((3, 5), minsize=PADDING_32)
-
         self.columnconfigure(0, weight=1)
 
+        # where the random part from the text will be displayed
         self.random_text_block = TextBlockSegment(self, localisation_key="random_text_part", initial_text="random_text")
         self.random_text_block.grid(row=0, column=0, sticky='nsew', padx=PADDING_24, pady=(PADDING_24, PADDING_NONE))
 
+        # block for the used chars
         self.used_chars_block = TextBlockSegment(self, localisation_key="used_chars", initial_text="random_text")
         self.used_chars_block.grid(row=2, column=0, sticky='nsew', padx=PADDING_24)
 
+        # main input
         self.input_block = InputSegment(
             self,
+            manager,
             'main_input_label',
             'main_input_placeholder',
             True
         )
         self.input_block.grid(row=4, column=0, sticky='nsew', padx=PADDING_24)
 
-        self.actions = Actions(self)
+        # buttons
+        self.actions = Actions(self, self.manager)
         self.actions.grid(row=6, column=0, sticky='nsew', pady=(PADDING_NONE, PADDING_24), padx=PADDING_24)
 
     def get_random_text_block(self):
+        """ util function to access specific block from the class """
         return self.random_text_block
 
     def get_used_chars_block(self):
+        """ util function to access specific block from the class """
         return self.used_chars_block
 
     def get_input_block(self):
@@ -511,33 +612,55 @@ class StatusFrame(ctk.CTkFrame):
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
 
-        self.after(100, self.check)
+        self.grid_rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
 
-    def check(self):
-        print(f'status frame: {self.winfo_height()}')
+        self.status = TextBlockSegment(
+            self,
+            'status_label',
+            'random_text'
+        )
+        self.status.grid(row=0, column=0, sticky='nsew', padx=PADDING_24, pady=PADDING_24)
+
+    def get_status_block(self):
+        return self.status
+
+    def update_status(self, key):
+        bind_localisation(self.status.text_block, key, self.status.update_value)
 
 
 class LeftFrame(ctk.CTkFrame):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, manager, **kwargs):
         super().__init__(parent, **kwargs)
 
-        self.rowconfigure(0, minsize=72)
-        self.rowconfigure(2, weight=1)
+        # init experiment manager
+        self.manager: ExperimentManager = manager
+
+        # remove gray background from the frame
+        self.configure(fg_color='transparent')
+
+        # layout settings
+        self.rowconfigure(0, minsize=100)  # cards
+        self.rowconfigure(2, weight=1)  # input frame
         self.rowconfigure((1, 3), minsize=PADDING_16)  # row gap (16px)
-        self.rowconfigure(4, weight=0)
+        self.rowconfigure(4, weight=0)  # status frame
+        self.columnconfigure(0, weight=1)  # for grid to work correctly
 
-        self.columnconfigure(0, weight=1)
-
+        # init cards
         self.cards = Cards(self, fg_color='transparent')
         self.cards.grid(row=0, column=0, sticky='nsew')
 
-        self.input_frame = InputFrame(self)
+        # init input frame (core of the program)
+        self.input_frame = InputFrame(self, self.manager)
         self.input_frame.grid(row=2, column=0, sticky='nsew')
 
-        self.status_frame = StatusFrame(self, fg_color='orange')
+        # init status frame
+        self.status_frame = StatusFrame(self)
         self.status_frame.grid(row=4, column=0, sticky='nsew')
 
-        self.manager = ExperimentManager(self.cards, self.input_frame, get_alphabet(APP_CURRENT_LANGUAGE))
+    def get_widgets(self):
+        """ returns list of the main widgets in the left frame """
+        return [self.cards, self.input_frame, self.status_frame]
 
 
 class RightFrame(ctk.CTkFrame):
@@ -546,79 +669,199 @@ class RightFrame(ctk.CTkFrame):
 
 
 class MainFrame(ctk.CTkFrame):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, manager, **kwargs):
         super().__init__(parent, **kwargs)
+
+        self.configure(fg_color='transparent')
+        self.manager: ExperimentManager = manager
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(1, minsize=PADDING_32)
         self.columnconfigure((0, 2), weight=1)
 
-        self.left_frame = LeftFrame(self, fg_color='blue')
+        self.left_frame = LeftFrame(self, self.manager)
         self.left_frame.grid(row=0, column=0, sticky='nsew')
 
         self.right_frame = RightFrame(self, fg_color='purple')
         self.right_frame.grid(row=0, column=2, sticky='nsew')
 
+        self.manager.load_widgets(self.left_frame.get_widgets())
+
 
 class ExperimentManager:
-    def __init__(self, cards: Cards, inputs: InputFrame, alphabet):
-        self.cards = cards
-        self.input_frame: InputSegment = inputs.get_input_block()
-        self.text_block_segment: TextBlockSegment = inputs.get_random_text_block()
-        self.used_letters_block: TextBlockSegment = inputs.get_used_chars_block()
+    def __init__(self, main_widgets: list):
 
         self.full_text = ""
         self.visible_text = ""
+        self.next_char = ""
+        self.text = ''
+
+        self.cards: Cards | None = None
+        self.input_frame: InputSegment | None = None
+        self.text_block_segment: TextBlockSegment | None = None
+        self.used_letters_block: TextBlockSegment | None = None
+        self.status_block: StatusFrame | None = None
+
+        self.actions: Actions | None = None
+        self.start_button: Button | None = None
+        self.ngram_order_menu: OptionMenu | None = None
+        self.reset_button: Button | None = None
 
         self.ngram_order = 5
         self.attempts = 0
         self.correct_guesses = 0
-        self.used_letters = set()
+        self.used_letters = []
+        self.min_length = 72
         self.experiment_active = False
-        self.alphabet = alphabet
+        self.alphabet = ''
+        self.experiment_number = 1
 
-    def start_experiment(self, text):
-        self.full_text = text
+    def change_ngram(self, value: int):
+        self.ngram_order = value
+
+    def load_actions(self, actions: Actions):
+        self.actions = actions
+
+    def get_text(self, lang_code):
+        text_parts = load_texts(lang_code)
+
+        if not text_parts or len(text_parts) < self.min_length:
+            return None
+
+        start_idx = random.randint(0, len(text_parts) - self.min_length)
+        result = text_parts[start_idx:start_idx + self.min_length]
+        return result
+
+    def load_buttons(self, button_list):
+        if not button_list:
+            return None
+
+        self.start_button = button_list[0]
+        self.ngram_order_menu = button_list[1]
+        self.reset_button = button_list[2]
+
+    def load_widgets(self, main_widgets: list):
+        self.cards = main_widgets[0]
+        self.input_frame: InputSegment = main_widgets[1].get_input_block()
+        self.text_block_segment: TextBlockSegment = main_widgets[1].get_random_text_block()
+        self.used_letters_block: TextBlockSegment = main_widgets[1].get_used_chars_block()
+        self.status_block: StatusFrame = main_widgets[2]
+
+    def start_experiment(self):
+
+        # changing start button label (start -> next experiment)
+        bind_localisation(self.start_button, 'next_button_label')
+
+        self.ngram_order_menu.configure(state='disabled')
+
+        self.start_button.disable_button()
+        self.start_button.get_button_state()
+        self.start_button.set_command(self.next_experiment)
+
+        self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
+        self.text = self.get_text(APP_CURRENT_LANGUAGE)
+        self.full_text = self.text
+        self.input_frame.clear()
         self.visible_text = self.full_text[:self.ngram_order]
+
         self.text_block_segment.update_value(self.visible_text)
+
+        self.next_char = self.get_next_char()
         self.input_frame.enable_input()
         self.experiment_active = True
         self.reset_attempts()
 
-    def reset_experiment(self, new_text):
-        self.start_experiment(new_text)
+        self.cards.get_card('experiment_number').update_value(self.experiment_number)
+
+    def next_experiment(self):
+        self.experiment_number += 1
+        self.used_letters.clear()
+        self.used_letters_block.reset()
+        self.start_experiment()
+
+        self.cards.get_card('last_char').update_value('-')
+        self.status_block.get_status_block().reset()
+
+    def reset_experiment(self):
+
+        self.experiment_number = False
+
+        # resetting all
         self.correct_guesses = 0
         self.used_letters.clear()
         self.cards.reset_all()
+        self.experiment_number = 0
+
+        # resetting input frame
+        self.input_frame.disable_input()
+
+        # resetting text blokcs
+        self.text_block_segment.reset()
+        self.status_block.get_status_block().reset()
+        self.used_letters_block.reset()
+
+        # resetting menu and buttons
+        self.ngram_order_menu.configure(state='normal')
+        self.start_button.enable_button()
+
+        # changing start_button label back to start
+        bind_localisation(self.start_button, 'start')
+
+    def get_next_char(self):
+        """Get the next character that should be guessed based on the visible text."""
+        if len(self.visible_text) < len(self.full_text):
+            return self.full_text[len(self.visible_text)]
+        return None
 
     def input_handler(self, user_input):
         user_input = user_input[0] if len(user_input) > 0 else ''
-        self.input_frame.update_input('')
+        self.input_frame.clear()
 
         if user_input not in self.alphabet:
+            self.status_block.update_status("invalid_char")
             return 'invalid'
+
+        if user_input == '':
+            return 'invalid'
+
+        if user_input == ' ':
+            user_input = '_'
 
         if user_input in self.used_letters:
+            self.status_block.update_status("used_char")
             return 'invalid'
 
-        self.used_letters.add(user_input)
+        self.used_letters.append(user_input)
         self.attempts += 1
+
+        if len(self.used_letters) > len(self.alphabet):
+            return 'invalid'
 
         # updating cards
         self.cards.get_card('attempt').update_value(str(self.attempts))
         self.cards.get_card('last_char').update_value(user_input)
 
         # update text block
-        self.used_letters_block.update_value(self.used_letters)
+        used_letters_str = ' , '.join(self.used_letters)
+        self.used_letters_block.update_value(used_letters_str)
 
-        next_char = self.full_text[len(self.visible_text)] if len(self.visible_text) < len(self.full_text) else None
+        next_char = self.next_char
+        print(next_char)
 
         if next_char and user_input == next_char:
+
+            self.start_button.enable_button()
+
+            self.status_block.update_status("win")
             self.correct_guesses += 1
             self.visible_text = self.full_text
             self.text_block_segment.update_value(self.visible_text)
+            self.input_frame.clear()
+            self.input_frame.disable_input()
+
             return 'correct'
         else:
+            self.status_block.update_status("incorrect")
             return 'incorrect'
 
     def reset_attempts(self):
@@ -649,10 +892,13 @@ class App(ctk.CTk):
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
 
-        self.top_frame = TopFrame(parent=self)
+        # manager
+        self.manager: ExperimentManager = ExperimentManager([])
+
+        self.top_frame = TopFrame(self, self.manager)
         self.top_frame.grid(row=0, column=0, sticky='nsew', padx=PADDING_32, pady=PADDING_32)
 
-        self.main_frame = MainFrame(parent=self, fg_color='red')
+        self.main_frame = MainFrame(self, self.manager)
         self.main_frame.grid(row=1, column=0, sticky='nsew', padx=PADDING_32, pady=(PADDING_NONE, PADDING_32))
 
         # bind escape to close the app

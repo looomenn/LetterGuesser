@@ -6,9 +6,15 @@
   "used_chars": "Already used chars",
   "no_input": "No input was given",
   "main_input_label": "Your char",
-  "main_input_placeholder": "Select the order of N-gram",
+  "main_input_placeholder": "Start the experiment",
   "next_button_label": "Next experiment",
   "reset_button_label": "Reset",
   "char_numbers": "chars",
-  "ngram_selector_label": "N-gram order"
+  "ngram_selector_label": "N-gram order",
+  "status_label": "Experiment log",
+  "start": "Start experiment",
+  "invalid_char": "Enter char only from english alphabet",
+  "win": "You guessed correctly! Press 'Next experiment' to continue or 'Restart' to reset all data",
+  "incorrect": "Wrong char, try another one",
+  "used_char": "You already used this char, try another one"
 }
