@@ -4,6 +4,9 @@ import sys
 import json
 import random
 
+from functools import partial
+
+from CTkTable import *
 import customtkinter as ctk
 
 ctk.set_appearance_mode('light')
@@ -76,7 +79,7 @@ BUTTON_DANGER_BORDER_DISABLED = BUTTON_DEFAULT_FG_COLOR
 
 # App Settings
 APP_TITLE: str = 'LetterGuesser'
-APP_SIZE: tuple = (1200, 840)
+APP_SIZE: tuple = (1240, 840)
 APP_LANGUAGE_DATA: dict = {}  # where language data stored when load_language() called
 APP_WIDGETS_BINDINGS: dict = {}  # where the binding of widget label and localisation key is stored
 
@@ -351,6 +354,7 @@ class InputSegment(ctk.CTkFrame):
         self.input_field.configure(text_color=ctk.ThemeManager.theme['CTkEntry']['text_color'])
 
     def disable_input(self):
+        self.input_field.focus()
         self.input_field.configure(state='disabled')
         self.input_field.configure(text_color=ctk.ThemeManager.theme['CTkEntry']['placeholder_text_color'])
 
@@ -372,6 +376,16 @@ class TopFrame(ctk.CTkFrame):
                                                         command=self.change_language)
         self.language_selector.set(APP_DEFAULT_LANGUAGE)
         self.language_selector.grid(row=0, column=1, padx=(PADDING_NONE, PADDING_12))
+
+    def toggle_langauge(self, event=None):
+        if APP_CURRENT_LANGUAGE == 'en':
+            self.language_selector.set('Ukrainian')
+            load_language('uk')
+        else:
+            self.language_selector.set('English')
+            load_language('en')
+
+        self.manager.reset_experiment()
 
     def change_language(self, langauge):
         lang_code = "en" if langauge == 'English' else "uk"
@@ -575,7 +589,7 @@ class InputFrame(ctk.CTkFrame):
         # init manager (from the LeftFrame)
         self.manager: ExperimentManager = manager
 
-        # layout
+        # layout+
         self.rowconfigure((0, 2, 4, 6), weight=1)
         self.rowconfigure(1, minsize=PADDING_24)
         self.rowconfigure((3, 5), minsize=PADDING_32)
@@ -676,36 +690,10 @@ class ProbabilityTable(ctk.CTkScrollableFrame):
 
         self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
         self.alphabet_len = len(self.alphabet)
+        self.probability_data = []
 
-        self.attempt_numbers = list(range(1, self.alphabet_len + 1))
-        self.attempts_data = [0] * self.alphabet_len
-        self.attempt_labels: list = []
-        self.labels: list = []
-
-        self.is_data: bool = True  # flag to show/hide absent message
-
-
-        self.placeholder = ctk.CTkLabel(
-            self,
-            text='text-placeholder',
-            height=TEXT_BODY_MEDIUM_HEIGHT,
-            font=ctk.CTkFont(
-                family=FONT,
-                size=TEXT_BODY_MEDIUM
-            ),
-            text_color=TEXT_SECONDARY
-        )
-        bind_localisation(self.placeholder, 'table_placeholder')
-        self.placeholder.grid(row=0, column=0, columnspan=2, sticky='nsew')
-
-        self.init_widgets()
-
-        if self.is_data:
-            self.show_table()
-        else:
-            self.show_placeholder()
-
-    def init_widgets(self):
+        self.rowconfigure((0, 1), weight=1)
+        self.columnconfigure(0, weight=1)
 
         # frame title
         self.title_label = ctk.CTkLabel(
@@ -721,114 +709,162 @@ class ProbabilityTable(ctk.CTkScrollableFrame):
         )
         bind_localisation(self.title_label, 'probability')
         self.title_label.grid(
-            row=0, column=0, columnspan=2, sticky='ew',
+            row=0, column=0, sticky='nsew',
             padx=PADDING_12, pady=(PADDING_12, PADDING_16)
         )
 
-        # header for attempts
-        self.header_attempt = ctk.CTkLabel(
+        # table placeholder
+        self.placeholder = ctk.CTkLabel(
             self,
-            text='',
-            height=TEXT_BODY_SMALL_HEIGHT,
+            text='text-placeholder',
+            height=TEXT_BODY_MEDIUM_HEIGHT,
             font=ctk.CTkFont(
                 family=FONT,
-                size=TEXT_BODY_SMALL
-            )
+                size=TEXT_BODY_MEDIUM
+            ),
+            text_color=TEXT_SECONDARY
         )
 
-        bind_localisation(self.header_attempt, 'attempt')
-        self.header_attempt.grid(
-            row=1, column=0, sticky='ew',
-            padx=PADDING_12, pady=PADDING_8
-        )
+        bind_localisation(self.placeholder, 'table_placeholder')
+        self.placeholder.grid(row=1, column=0, sticky='nsew', pady=(72, 0))
 
-        # header for probability
-        self.header_probability = ctk.CTkLabel(
-            self,
-            text='',
-            height=TEXT_BODY_SMALL_HEIGHT,
-            font=ctk.CTkFont(
-                family=FONT,
-                size=TEXT_BODY_SMALL
-            )
-        )
+        # table
+        self.table = CTkTable(self, column=2, corner_radius=8, row=self.alphabet_len, justify='w')
+        self.table.grid(row=1, column=0, sticky='nsew', padx=PADDING_12)
+        self.table.grid_remove()
 
-        bind_localisation(self.header_probability, 'probability')
-        self.header_probability.grid(
-            row=1, column=1, sticky='w',
-            padx=(PADDING_NONE, PADDING_8), pady=PADDING_8
-        )
+        self.header_keys: list[str] = ['attempt', 'probability']
+        self.headers: list = ['', '']
+        self.bind_headers()
 
-        # placing aka table items
-        for i in range(self.alphabet_len):
-            attempt_label = ctk.CTkLabel(
-                self,
-                text=str(i + 1),
-                anchor='w'
-            )
-            attempt_label.grid(
-                row=i+2, column=0, sticky='w',
-                padx=PADDING_12
-            )
+        #self.init_table()
 
-            probability_label = ctk.CTkLabel(
-                self,
-                text=str(self.attempts_data[i]),
-                anchor='w'
-            )
-            probability_label.grid(row=i + 2, column=1, sticky='w')
+    def bind_headers(self):
+        self.header_attempt, self.header_prob = ctk.CTkLabel(self, text=''), ctk.CTkLabel(self, text='')
 
-            self.attempt_labels.append(attempt_label)
-            self.labels.append(probability_label)
+        bind_localisation(self.header_attempt, 'attempt', self.update_header_attempt)
+        bind_localisation(self.header_prob, 'probability', self.update_header_prob)
+
+    def update_header_attempt(self, text):
+        self.headers[0] = text
+        self.update_table()
+
+    def update_header_prob(self, text):
+        self.headers[1] = text
+        self.update_table()
 
     def show_placeholder(self):
         # showing placeholder
         self.placeholder.grid()
+        self.table.grid_remove()
 
-        # removing table data
-        self.title_label.grid_remove()
-        self.header_attempt.grid_remove()
-        self.header_probability.grid_remove()
-
-        for label in self.labels:
-            label.grid_remove()
-
-        for label in self.attempt_labels:
-            label.grid_remove()
-
-    def show_table(self):
-        # show table
+    def hide_placeholder(self):
         self.placeholder.grid_remove()
+        self.table.grid()
 
-        self.title_label.grid()
-        self.header_attempt.grid()
-        self.header_probability.grid()
+    def init_table(self):
+        self.probability_data = [self.headers]
 
-        for row_index, label in enumerate(self.attempt_labels):
-            label.grid(row=row_index + 2, column=0, sticky='w')
+        for i in range(1, self.alphabet_len + 1):
+            self.probability_data.append([i, 0])
 
-        for row_index, label in enumerate(self.labels):
-            label.grid(row=row_index + 2, column=1, sticky='w')
+        self.update_table()
 
-    def update_probability(self, new_data):
-        self.show_table()
-        for i in range(new_data):
-            self.attempts_data[i] = new_data[i]
-            self.labels[i].configure(text=str(new_data[i]))
+    def update_table(self):
+        if not self.probability_data or len(self.probability_data) == 1:
+            self.show_placeholder()
+        else:
+            self.hide_placeholder()
+            self.table.update_values(self.probability_data)
+
+    def get_row(self, index):
+        if index == 0:
+            raise IndexError('You trying to access table header')
+
+        return self.table.get_row(index)
+
+    def check_index(self, index):
+
+        for idx, row in enumerate(self.probability_data):
+            if row[0] == index:
+                return index
+        return None
+
+    def update_prob(self, index, new_value: int | float):
+
+        idx = self.check_index(index)
+
+        if idx is None or idx > len(self.probability_data):
+            raise IndexError('No such index')
+
+        self.table.insert(idx, 1, new_value)
+
+    def reset(self):
+        self.probability_data = []
+        self.update_table()
+
+
+class GuessedChars(ctk.CTkScrollableFrame):
+    def __init__(self, parent, manager, **kwargs):
+        super().__init__(parent, **kwargs)
+
+        self.manager: ExperimentManager = manager
+
+        self.columnconfigure(0, weight=1)
+
+        self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
+        self.alphabet_len = len(self.alphabet)
+        self.guessed_data = []
+
+        self.table = CTkTable(
+            self,
+            hover=False,
+            row=self.alphabet_len,
+            column=1,
+            justify='left',
+        )
+        self.table.grid(row=0, column=0, sticky='nsew', padx=PADDING_12)
+
+    def placeholder(self):
+        self.table.add_row('Data is absent')
+
+    def clear_placeholder(self):
+        self.table.update_values([''])
+
+    def add_char(self, char, attempt):
+        binary = ['0'] * self.alphabet_len
+
+        if attempt <= self.alphabet_len:
+            binary[attempt - 1] = '1'
+
+        binary_string = ''.join(binary)
+
+        symbol_label = f'Symbol: {char:}     Attempt: {attempt}\n{binary_string}'
+
+        self.guessed_data.append([symbol_label])
+
+        self.table.update_values(self.guessed_data)
 
 
 class RightFrame(ctk.CTkFrame):
     def __init__(self, parent, manager, **kwargs):
         super().__init__(parent, **kwargs)
 
+        self.manager: ExperimentManager = manager
+
         self.configure(fg_color='transparent')
 
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(1, minsize=PADDING_32)
-        self.columnconfigure((0, 2), weight=0)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure((0, 2), weight=1)
+        self.rowconfigure(1, minsize=PADDING_16)
 
         self.probability_table: ProbabilityTable = ProbabilityTable(self)
         self.probability_table.grid(row=0, column=0, sticky='nsew')
+
+        self.guessed_table: GuessedChars = GuessedChars(self, manager)
+        self.guessed_table.grid(row=2, column=0, sticky='nsew')
+
+        self.manager.load_right_frame([self.probability_table, self.guessed_table])
 
 
 class MainFrame(ctk.CTkFrame):
@@ -865,6 +901,10 @@ class ExperimentManager:
         self.used_letters_block: TextBlockSegment | None = None
         self.status_block: StatusFrame | None = None
 
+        # tables
+        self.guessed_chars_frame: GuessedChars | None = None
+        self.probability_frame: ProbabilityTable | None = None
+
         self.actions: Actions | None = None
         self.start_button: Button | None = None
         self.ngram_order_menu: OptionMenu | None = None
@@ -876,8 +916,13 @@ class ExperimentManager:
         self.used_letters = []
         self.min_length = 72
         self.experiment_active = False
-        self.alphabet = ''
+        self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
         self.experiment_number = 1
+        self.attempt_counts = [0] * len(self.alphabet)
+
+    def load_right_frame(self, frames: list[ProbabilityTable | GuessedChars]):
+        self.probability_frame = frames[0]
+        self.guessed_chars_frame = frames[1]
 
     def change_ngram(self, value: int):
         self.ngram_order = value
@@ -912,6 +957,9 @@ class ExperimentManager:
 
     def start_experiment(self):
 
+        # get current alphabet
+        self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
+
         # changing start button label (start -> next experiment)
         bind_localisation(self.start_button, 'next_button_label')
 
@@ -921,7 +969,6 @@ class ExperimentManager:
         self.start_button.get_button_state()
         self.start_button.set_command(self.next_experiment)
 
-        self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
         self.text = self.get_text(APP_CURRENT_LANGUAGE)
         self.full_text = self.text
         self.input_frame.clear()
@@ -947,18 +994,25 @@ class ExperimentManager:
 
     def reset_experiment(self):
 
+        # additional check for alphabet
+        self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
+
         self.experiment_number = False
+
+        # resetting tables
+        self.probability_frame.reset()
 
         # resetting all
         self.correct_guesses = 0
         self.used_letters.clear()
         self.cards.reset_all()
         self.experiment_number = 0
+        self.attempt_counts = [0] * len(self.alphabet)
 
         # resetting input frame
         self.input_frame.disable_input()
 
-        # resetting text blokcs
+        # resetting text blocks
         self.text_block_segment.reset()
         self.status_block.get_status_block().reset()
         self.used_letters_block.reset()
@@ -1013,7 +1067,17 @@ class ExperimentManager:
 
         if next_char and user_input == next_char:
 
+            # init probability table
+            self.probability_frame.init_table()
+
+            print(self.attempt_counts, self.attempts)
+            self.attempt_counts[self.attempts - 1] += 1
+
+            self.calc_prob()
+
             self.start_button.enable_button()
+
+            self.guessed_chars_frame.add_char(next_char, self.attempts)
 
             self.status_block.update_status("win")
             self.correct_guesses += 1
@@ -1026,6 +1090,12 @@ class ExperimentManager:
         else:
             self.status_block.update_status("incorrect")
             return 'incorrect'
+
+    def calc_prob(self):
+        for i, count in enumerate(self.attempt_counts):
+            if count > 0:
+                prob = count / sum(self.attempt_counts)
+                self.probability_frame.update_prob(i+1, prob)
 
     def reset_attempts(self):
         self.attempts = 0
@@ -1067,6 +1137,7 @@ class App(ctk.CTk):
 
         # bind escape to close the app
         self.bind('<Escape>', lambda event: self.quit())
+        self.bind('<Control-l>', lambda event: self.top_frame.toggle_langauge())
 
         # run app
         self.mainloop()

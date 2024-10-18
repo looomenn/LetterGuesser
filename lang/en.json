@@ -1,6 +1,7 @@
 {
   "experiment_number": "Experiment No.",
   "attempts": "Chars used",
+  "attempt": "Attempt",
   "last_char": "Last char",
   "random_text_part": "Random part from the text",
   "used_chars": "Already used chars",
@@ -16,5 +17,7 @@
   "invalid_char": "Enter char only from english alphabet",
   "win": "You guessed correctly! Press 'Next experiment' to continue or 'Restart' to reset all data",
   "incorrect": "Wrong char, try another one",
-  "used_char": "You already used this char, try another one"
+  "used_char": "You already used this char, try another one",
+  "probability": "Probability",
+  "table_placeholder": "-\\_(0_o)_/-\nNo data to display"
 }
