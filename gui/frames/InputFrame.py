@@ -25,13 +25,13 @@ class InputFrame(BaseFrame):
             pady=(pad_5, pad_3)
         )
 
-        self.user_chars = TextBlockSegment(
+        self.used_chars = TextBlockSegment(
             self,
             localisation_key='used_chars',
             initial_text='-'
         )
         self.add_widget(
-            self.user_chars,
+            self.used_chars,
             side='top',
             expand=False,
             padx=pad_5,
@@ -54,23 +54,24 @@ class InputFrame(BaseFrame):
 
         buttons_configs = [
             {
-                "type": "button",
-                "label_key": "start",
-                "style": "primary",
-                "command": self.start,
-            },
-            {
                 "type": "option_menu",
                 "label_key": "char_numbers",
                 "initial_value": 5,
-                "command": self.select_ngram,
+                "command": self.manager.change_ngram,
                 "values": [i for i in range(5, 55, 5)]
             },
             {
                 "type": "button",
                 "label_key": "reset_button_label",
                 "style": "danger",
-                "command": self.reset,
+                "command": self.manager.reset_experiment,
+                "is_disabled": True
+            },
+            {
+                "type": "button",
+                "label_key": "start",
+                "style": "primary",
+                "command": self.manager.start_experiment,
             }
         ]
 
@@ -83,11 +84,9 @@ class InputFrame(BaseFrame):
             padx=pad_5
         )
 
-    def start(self):
-        pass
-
-    def select_ngram(self, value):
-        pass
-
-    def reset(self):
-        pass
+        self.manager.load_widgets({
+            "random_text": self.random_text,
+            "used_chars": self.used_chars,
+            "input": self.input,
+            "actions": self.actions
+        })

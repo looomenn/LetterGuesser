@@ -1,12 +1,13 @@
-""" Experiment Manager """
+# core
+import gui
+import random
 
+# utils
 from config import *
+from .utils import *
 
 
 class ExperimentManager:
-    """"
-    Class that manages experiments
-    """
     _instance = None
 
     def __new__(cls, *args, **kwargs):
@@ -14,223 +15,236 @@ class ExperimentManager:
             cls._instance = super(ExperimentManager, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, localisation,  main_widgets: list):
+    def __init__(self,
+                 localisation,
+                 ):
 
         # avoid re-init
         if hasattr(self, 'initialized'):
             print('Experiment Manager already initialized')
             return
 
+        # cached widgets / frames
+        self.cards: gui.widgets.CardGroup | None = None
+        self.input: gui.widgets.InputBlock | None = None
+        self.status: gui.widgets.TextBlockSegment | None = None
+        self.actions: gui.widgets.ButtonGroup | None = None
+        self.used_chars: gui.widgets.TextBlockSegment | None = None
+        self.given_text: gui.widgets.TextBlockSegment | None = None
+
+        self.prob_table: gui.frames.ProbabilityTable | None = None
+        self.attempts_table: gui.frames.AttemptsTable | None = None
+
         self.localisation = localisation
-    #
-    #     self.full_text = ""
-    #     self.visible_text = ""
-    #     self.next_char = ""
-    #     self.text = ''
-    #
-    #     self.cards: Cards | None = None
-    #     self.input_frame: InputSegment | None = None
-    #     self.text_block_segment: TextBlockSegment | None = None
-    #     self.used_letters_block: TextBlockSegment | None = None
-    #     self.status_block: StatusFrame | None = None
-    #
-    #     # tables
-    #     self.guessed_chars_frame: GuessedChars | None = None
-    #     self.probability_frame: ProbabilityTable | None = None
-    #
-    #     self.actions: Actions | None = None
-    #     self.start_button: Button | None = None
-    #     self.ngram_order_menu: OptionMenu | None = None
-    #     self.reset_button: Button | None = None
-    #
-    #     self.ngram_order = 5
-    #     self.attempts = 0
-    #     self.correct_guesses = 0
-    #     self.used_letters = []
-    #     self.min_length = 72
-    #     self.experiment_active = False
-    #     self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
-    #     self.experiment_number = 1
-    #     self.attempt_counts = [0] * len(self.alphabet)
-    #
-    # def load_right_frame(self, frames: list[ProbabilityTable | GuessedChars]):
-    #     self.probability_frame = frames[0]
-    #     self.guessed_chars_frame = frames[1]
-    #
-    # def change_ngram(self, value: int):
-    #     self.ngram_order = value
-    #
-    # def load_actions(self, actions: Actions):
-    #     self.actions = actions
-    #
-    # def get_text(self, lang_code):
-    #     text_parts = load_texts(lang_code)
-    #
-    #     if not text_parts or len(text_parts) < self.min_length:
-    #         return None
-    #
-    #     start_idx = random.randint(0, len(text_parts) - self.min_length)
-    #     result = text_parts[start_idx:start_idx + self.min_length]
-    #     return result
-    #
-    # def load_buttons(self, button_list):
-    #     if not button_list:
-    #         return None
-    #
-    #     self.start_button = button_list[0]
-    #     self.ngram_order_menu = button_list[1]
-    #     self.reset_button = button_list[2]
-    #
-    # def load_widgets(self, main_widgets: list):
-    #     self.cards = main_widgets[0]
-    #     self.input_frame: InputSegment = main_widgets[1].get_input_block()
-    #     self.text_block_segment: TextBlockSegment = main_widgets[1].get_random_text_block()
-    #     self.used_letters_block: TextBlockSegment = main_widgets[1].get_used_chars_block()
-    #     self.status_block: StatusFrame = main_widgets[2]
-    #
-    # def start_experiment(self):
-    #
-    #     # get current alphabet
-    #     self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
-    #
-    #     # changing start button label (start -> next experiment)
-    #     bind_localisation(self.start_button, 'next_button_label')
-    #
-    #     self.ngram_order_menu.configure(state='disabled')
-    #
-    #     self.start_button.disable_button()
-    #     self.start_button.get_button_state()
-    #     self.start_button.set_command(self.next_experiment)
-    #
-    #     self.text = self.get_text(APP_CURRENT_LANGUAGE)
-    #     self.full_text = self.text
-    #     self.input_frame.clear()
-    #     self.visible_text = self.full_text[:self.ngram_order]
-    #
-    #     self.text_block_segment.update_value(self.visible_text)
-    #
-    #     self.next_char = self.get_next_char()
-    #     self.input_frame.enable_input()
-    #     self.experiment_active = True
-    #     self.reset_attempts()
-    #
-    #     self.cards.get_card('experiment_number').update_value(self.experiment_number)
-    #
-    # def next_experiment(self):
-    #     self.experiment_number += 1
-    #     self.used_letters.clear()
-    #     self.used_letters_block.reset()
-    #     self.start_experiment()
-    #
-    #     self.cards.get_card('last_char').update_value('-')
-    #     self.status_block.get_status_block().reset()
-    #
-    # def reset_experiment(self):
-    #
-    #     # additional check for alphabet
-    #     self.alphabet = get_alphabet(APP_CURRENT_LANGUAGE)
-    #
-    #     self.experiment_number = False
-    #
-    #     # resetting tables
-    #     self.probability_frame.reset()
-    #
-    #     # resetting all
-    #     self.correct_guesses = 0
-    #     self.used_letters.clear()
-    #     self.cards.reset_all()
-    #     self.experiment_number = 0
-    #     self.attempt_counts = [0] * len(self.alphabet)
-    #
-    #     # resetting input frame
-    #     self.input_frame.disable_input()
-    #
-    #     # resetting text blocks
-    #     self.text_block_segment.reset()
-    #     self.status_block.get_status_block().reset()
-    #     self.used_letters_block.reset()
-    #
-    #     # resetting menu and buttons
-    #     self.ngram_order_menu.configure(state='normal')
-    #     self.start_button.enable_button()
-    #
-    #     # changing start_button label back to start
-    #     bind_localisation(self.start_button, 'start')
-    #
-    # def get_next_char(self):
-    #     """Get the next character that should be guessed based on the visible text."""
-    #     if len(self.visible_text) < len(self.full_text):
-    #         return self.full_text[len(self.visible_text)]
-    #     return None
-    #
-    # def input_handler(self, user_input):
-    #     user_input = user_input[0] if len(user_input) > 0 else ''
-    #     self.input_frame.clear()
-    #
-    #     if user_input not in self.alphabet:
-    #         self.status_block.update_status("invalid_char")
-    #         return 'invalid'
-    #
-    #     if user_input == '':
-    #         return 'invalid'
-    #
-    #     if user_input == ' ':
-    #         user_input = '_'
-    #
-    #     if user_input in self.used_letters:
-    #         self.status_block.update_status("used_char")
-    #         return 'invalid'
-    #
-    #     self.used_letters.append(user_input)
-    #     self.attempts += 1
-    #
-    #     if len(self.used_letters) > len(self.alphabet):
-    #         return 'invalid'
-    #
-    #     # updating cards
-    #     self.cards.get_card('attempt').update_value(str(self.attempts))
-    #     self.cards.get_card('last_char').update_value(user_input)
-    #
-    #     # update text block
-    #     used_letters_str = ' , '.join(self.used_letters)
-    #     self.used_letters_block.update_value(used_letters_str)
-    #
-    #     next_char = self.next_char
-    #     print(next_char)
-    #
-    #     if next_char and user_input == next_char:
-    #
-    #         # init probability table
-    #         self.probability_frame.init_table()
-    #
-    #         print(self.attempt_counts, self.attempts)
-    #         self.attempt_counts[self.attempts - 1] += 1
-    #
-    #         self.calc_prob()
-    #
-    #         self.start_button.enable_button()
-    #
-    #         self.guessed_chars_frame.add_char(next_char, self.attempts)
-    #
-    #         self.status_block.update_status("win")
-    #         self.correct_guesses += 1
-    #         self.visible_text = self.full_text
-    #         self.text_block_segment.update_value(self.visible_text)
-    #         self.input_frame.clear()
-    #         self.input_frame.disable_input()
-    #
-    #         return 'correct'
-    #     else:
-    #         self.status_block.update_status("incorrect")
-    #         return 'incorrect'
-    #
-    # def calc_prob(self):
-    #     for i, count in enumerate(self.attempt_counts):
-    #         if count > 0:
-    #             prob = count / sum(self.attempt_counts)
-    #             self.probability_frame.update_prob(i+1, prob)
-    #
-    # def reset_attempts(self):
-    #     self.attempts = 0
-    #     self.cards.get_card('attempt').update_value('-')
-    #
+
+        self.text = ""
+        self.next_char = ""
+        self.full_text = ""
+        self.visible_text = ""
+
+        # some counters
+        self.attempts = 0
+        self.min_length = 72
+        self.ngram_order = 5
+        self.used_letters = []
+        self.experiment_number = 1
+        self.is_active = False
+        self.attempt_counts = [0] * len(self.localisation.get_alphabet())
+
+        self.widgets = {}
+
+    def load_widgets(self, widgets: dict):
+        """
+        Load widgets into ExperimentManager dynamically.
+        :param widgets: A dict. of widgets instances (example: {'probability_frame': ProbabilityTable})
+        """
+        self.widgets.update(widgets)
+
+    def get_widget(self, widget_name: str):
+        """
+        Return a specific widget by its name.
+        :param widget_name: The key name of the widget.
+        :return: The widget instance if found, otherwise None
+        """
+        return self.widgets.get(widget_name)
+
+    def change_ngram(self, value: str):
+        value = value.split(' ')[0].strip()
+        self.ngram_order = int(value)
+
+    def get_text(self, lang_code: str):
+        text_parts = load_texts(lang_code)
+
+        if not text_parts or len(text_parts) < self.min_length:
+            return None
+
+        start_idx = random.randint(0, len(text_parts) - self.min_length)
+        result = text_parts[start_idx:start_idx + self.min_length]
+        return result
+
+    def get_next_char(self):
+        """Get the next character that should be guessed based on the visible text."""
+        if len(self.visible_text) < len(self.full_text):
+            return self.full_text[len(self.visible_text)]
+        return None
+
+    def start_experiment(self):
+
+        self.is_active = True
+
+        self.prob_table = self.get_widget('prob_table')
+        self.attempts_table = self.get_widget('attempts_table')
+
+        # widgets
+        self.actions = self.get_widget('actions')
+        self.input = self.get_widget('input')
+        self.given_text = self.get_widget('random_text')
+        self.cards = self.get_widget('cards')
+
+        self.status = self.get_widget('status')
+        self.used_chars = self.get_widget('used_chars')
+
+        # get random text part
+        self.text = self.get_text(self.localisation.get_locale())
+
+        # enabling reset button
+        reset_btn: gui.widgets.Button = self.actions.get_button('button_reset_button_label')
+        reset_btn.enable()
+
+        # start button shenanigans
+        start_btn: gui.widgets.Button = self.actions.get_button('button_start')  # we need Button instance yeah
+        self.localisation.bind(start_btn, 'next_button_label')  # re-bind new label (from start -> next experiment)
+        start_btn.disable()  # disabled it
+        start_btn.set_command(self.next_experiment)  # now button starts next experiment
+
+        # N-gram menu shenanigans
+        ngram_menu: gui.widgets.OptionMenu = self.actions.get_button('button_char_numbers')  # getting instance
+        ngram_menu.disable()  # and disabling it...
+
+        # text shenanigans
+        self.full_text = self.text
+        self.visible_text = self.full_text[:self.ngram_order]
+        self.next_char = self.get_next_char()
+
+        self.given_text.update_value(self.visible_text)  # show random part
+
+        # input shenanigans
+        self.input.clear()
+        self.input.enable()
+
+        self.attempts = 0
+        self.cards.get_card('card_attempts').update_value('-')
+        self.cards.get_card('card_experiment_number').update_value(self.experiment_number)
+
+    def next_experiment(self):
+        self.experiment_number += 1
+        self.used_letters.clear()
+
+        self.used_chars.reset()
+        self.status.reset()
+
+        self.cards.get_card('card_attempts').reset()
+        self.cards.get_card('card_last_char').reset()
+
+        self.start_experiment()
+
+    def reset_experiment(self):
+
+        if not self.is_active:
+            return
+
+        self.prob_table.reset_table()
+        self.attempts_table.reset_table()
+
+        alphabet = self.localisation.get_alphabet()
+
+        start_btn = self.actions.get_button('button_start')
+        reset_btn = self.actions.get_button('button_reset_button_label')
+        ngram_menu = self.actions.get_button('button_char_numbers')
+
+        self.used_letters.clear()
+        self.experiment_number = 0
+        self.attempt_counts = [0] * len(alphabet)
+        self.cards.reset_all()
+
+        # frames staff
+        self.input.disable()
+        self.input.reset()
+        self.status.reset()
+        self.used_chars.reset()
+        self.given_text.reset()
+
+        # buttons staff
+        reset_btn.disable()
+        start_btn.enable()
+        start_btn.reset()
+        ngram_menu.enable()
+
+    def input_handler(self, user_input):
+        alphabet = self.localisation.get_alphabet()
+
+        start_btn = self.actions.get_button('button_start')
+
+        user_input = user_input[0] if len(user_input) > 0 else ''
+        self.input.clear()
+
+        if user_input not in alphabet:
+            self.status.rebind("invalid_char")
+            return 'invalid'
+
+        if user_input == '':
+            return 'invalid'
+
+        if user_input == ' ':
+            user_input = '_'
+
+        if user_input in self.used_letters:
+            self.status.rebind("used_char")
+            return 'invalid'
+
+        self.used_letters.append(user_input)
+        self.attempts += 1
+
+        if len(self.used_letters) > len(alphabet):
+            return 'invalid'  # should never be reached
+
+        # updating cards
+        self.cards.get_card('card_attempts').update_value(str(self.attempts))
+        self.cards.get_card('card_last_char').update_value(user_input)
+
+        # update text block
+        used_letters_str = ' , '.join(self.used_letters)
+        self.used_chars.update_value(used_letters_str)
+
+        next_char = self.next_char
+        print(next_char)
+
+        if next_char and user_input == next_char:
+
+            self.prob_table.init()
+
+            print(self.attempt_counts, self.attempts)
+            self.attempt_counts[self.attempts - 1] += 1
+
+            self.calc_prob()
+
+            start_btn.enable()
+
+            self.attempts_table.add_char(next_char, self.attempts)
+
+            self.status.rebind("win")
+            self.visible_text = self.full_text
+            self.given_text.update_value(self.visible_text)
+            self.input.clear()
+            self.input.disable()
+
+            return 'correct'
+        else:
+            self.status.rebind("incorrect")
+            return 'incorrect'
+
+    def calc_prob(self):
+        for i, count in enumerate(self.attempt_counts):
+            if count > 0:
+                prob = count / sum(self.attempt_counts)
+                self.prob_table.update_prob(i+1, round(prob, 4))

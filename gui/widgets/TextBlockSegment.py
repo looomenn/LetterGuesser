@@ -56,6 +56,9 @@ class TextBlockSegment(BaseFrame):
 
         self.text_block.configure(text_color=ctk.ThemeManager.theme['CTkEntry']['placeholder_text_color'][0])
 
+    def rebind(self, new_loc_key: str):
+        self.localisation.bind(self.text_block, new_loc_key, self.update_value)
+
     def update_value(self, new_value):
         self.text_var.set(new_value)
 

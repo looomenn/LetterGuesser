@@ -12,7 +12,7 @@ localisation: Localisation = Localisation(
 )
 
 # Global instance of the Experiment Manager
-manager: ExperimentManager = ExperimentManager(localisation, [])
+manager: ExperimentManager = ExperimentManager(localisation)
 
 
 __all__ = ['localisation', 'manager']

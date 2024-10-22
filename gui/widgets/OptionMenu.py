@@ -42,6 +42,12 @@ class OptionMenu(ctk.CTkOptionMenu):
         self.bind('<Leave>', self.on_leave)
         self.localisation.bind(self, label_key, self.update_loc)
 
+    def disable(self):
+        self.configure(state='disabled', cursor='no')
+
+    def enable(self):
+        self.configure(state='normal', cursor='hand2')
+
     def on_hover(self, event):
         if self.cget('state') == 'normal':
             self.configure(fg_color=base_fill_1, text_color=text_primary, button_hover_color=base_fill_1)

@@ -4,7 +4,7 @@ import gettext
 from babel import Locale
 
 from .utils import get_resource_path
-from config import APP_DEFAULT_LANGUAGE_CODE
+from config import *
 
 
 class Localisation:
@@ -123,4 +123,8 @@ class Localisation:
         :return: Current locale.
         """
         return str(self.current_locale)
-    
+
+    def get_alphabet(self):
+        curr_lang = self.get_locale()
+        if curr_lang:
+            return ALPHABET_UK if curr_lang == 'uk' else ALPHABET_EN

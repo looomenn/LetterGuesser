@@ -1,7 +1,7 @@
 """ font vars """
 
 # general settings
-font: str = 'Calibri'
+font: str = 'Segoe UI'
 text_large: int = 18
 text_medium: int = 16
 text_small: int = 14

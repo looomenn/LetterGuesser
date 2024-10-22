@@ -45,12 +45,10 @@ class HeaderFrame(BaseFrame):
             self.language_selector.set('English')
             self.localisation.load_language('en')
 
-        # REMINDER
-        # self.manager.reset_experiment()
+        self.manager.reset_experiment()
 
     def change_language(self, langauge):
         lang_code = "en" if langauge == 'English' else "uk"
         self.localisation.load_language(lang_code)
 
-        # REMINDER
-        # self.manager.reset_experiment()
+        self.manager.reset_experiment()

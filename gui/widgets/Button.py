@@ -28,6 +28,8 @@ class Button(ctk.CTkButton):
         self.style = style
         self.is_disabled = is_disabled
 
+        self.key = label_key
+
         # styles
         self.fg_color: str | None = None
         self.text_color: str | None = None
@@ -47,20 +49,23 @@ class Button(ctk.CTkButton):
         self.propagate(False)
         self.configure(width=BUTTON_WIDTH, height=BUTTON_HEIGHT)
 
-        self.set_button_style()
+        self.set_style()
 
         if self.is_disabled:
-            self.disable_button()
+            self.disable()
 
         self.localisation.bind(
             self,
             label_key
         )
 
+    def reset(self):
+        self.localisation.bind(self, self.key)
+
     def set_command(self, function):
         self.configure(command=function)
 
-    def set_button_style(self):
+    def set_style(self):
         if self.style == 'default':
             if self.is_disabled:
                 self.fg_color = BUTTON_DEFAULT_FG_COLOR_DISABLED
@@ -106,15 +111,15 @@ class Button(ctk.CTkButton):
             text_color_disabled=self.text_color_disabled
         )
 
-    def get_button_state(self):
+    def get_state(self):
         return self.cget('state')
 
-    def enable_button(self):
+    def enable(self):
         self.is_disabled = False
-        self.configure(state='normal')
-        self.set_button_style()
+        self.configure(state='normal', cursor='hand2')
+        self.set_style()
 
-    def disable_button(self):
+    def disable(self):
+        self.configure(state='disabled', cursor='no')
         self.is_disabled = True
-        self.configure(state='disabled')
-        self.set_button_style()
+        self.set_style()

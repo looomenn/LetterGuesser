@@ -38,3 +38,7 @@ class LeftFrame(BaseFrame):
 
         self.status_frame = StatusFrame(self)
         self.add_widget(self.status_frame, side='top', fill='both', expand=True, pady=(pad_2, pad_0))
+
+        self.manager.load_widgets({
+            'cards': self.card_group
+        })

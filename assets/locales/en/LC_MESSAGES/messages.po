@@ -61,3 +61,5 @@ msgstr "Probability"
 msgid "table_placeholder"
 msgstr "-\_(0_o)_/-\nNo data to display"
 
+msgid "guessed_chars"
+msgstr "Guessed chars"

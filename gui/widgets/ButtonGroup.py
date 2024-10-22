@@ -72,12 +72,12 @@ class ButtonGroup(BaseFrame):
     def disable(self, key):
         button = self.get_button(key)
         if button:
-            button.disable_button()
+            button.disable()
 
     def enable(self, key):
         button = self.get_button(key)
         if button:
-            button.enable_button()
+            button.enable()
 
     def update_label(self, key, new_label_key):
         button = self.get_button(key)
@@ -87,9 +87,9 @@ class ButtonGroup(BaseFrame):
     def enable_all(self):
         """ Enables all buttons in the group """
         for button in self.buttons.values():
-            button.enable_button()
+            button.enable()
 
     def disable_all(self):
         """ Disables all buttons in the group """
         for button in self.buttons.values():
-            button.disable_button()
+            button.disable()

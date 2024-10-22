@@ -2,13 +2,11 @@
 LetterGuesser
 Author: Ange1o
 License: MIT
-Version: v3
+Version: v5
 """
 
-import json
-import random
 
-from CTkTable import *
+
 import customtkinter as ctk
 
 from gui.frames import *
@@ -17,10 +15,10 @@ from styles import *
 
 
 from logic import utils
-from context import localisation
+from context import localisation, manager
 # from logic.ExperimentManger import ExperimentManger
 
-ctk.set_appearance_mode('light')
+ctk.set_appearance_mode('dark')
 
 # APP_LANGUAGE_DATA: dict = {}  # where language data stored when load_language() called
 # APP_WIDGETS_BINDINGS: dict = {}  # where the binding of widget label and localisation key is stored
@@ -38,15 +36,7 @@ ctk.set_appearance_mode('light')
 #
 #     localisation_update()
 
-#
-# def load_texts(lang_code: str):
-#     file_path = utils.get_resource_path(f'texts/{lang_code}.txt')
-#
-#     with open(file_path, 'r', encoding='utf-8') as file:
-#         text_data = file.read()
-#     return text_data.replace('\n', '_').replace(' ', '_')
-#
-#
+
 # def bind_localisation(widget, translation_key, update_method=None) -> None:
 #     APP_WIDGETS_BINDINGS[widget] = (translation_key, update_method)
 #     update_widget_localisation(widget)
@@ -123,8 +113,8 @@ ctk.set_appearance_mode('light')
 #
 #     def select_ngram(self, value):
 #         self.manager.change_ngram(int(value.split(' ')[0]))
-#
-#
+
+
 # class InputFrame(ctk.CTkFrame):
 #     def __init__(self, parent, manager, **kwargs):
 #         super().__init__(parent, **kwargs)
@@ -387,8 +377,8 @@ ctk.set_appearance_mode('light')
 #         self.guessed_data.append([symbol_label])
 #
 #         self.table.update_values(self.guessed_data)
-#
-#
+
+
 # class RightFrame(ctk.CTkFrame):
 #     def __init__(self, parent, manager, **kwargs):
 #         super().__init__(parent, **kwargs)
@@ -408,26 +398,6 @@ ctk.set_appearance_mode('light')
 #         self.guessed_table.grid(row=2, column=0, sticky='nsew')
 #
 #         self.manager.load_right_frame([self.probability_table, self.guessed_table])
-#
-#
-# # class MainFrame(ctk.CTkFrame):
-# #     def __init__(self, parent, manager, **kwargs):
-# #         super().__init__(parent, **kwargs)
-# #
-# #         self.configure(fg_color='transparent')
-# #         self.manager: ExperimentManager = manager
-# #
-# #         self.rowconfigure(0, weight=1)
-# #         self.columnconfigure(1, minsize=PADDING_32)
-# #         self.columnconfigure((0, 2), weight=1)
-# #
-# #         self.left_frame = LeftFrame(self, self.manager)
-# #         self.left_frame.grid(row=0, column=0, sticky='nsew')
-# #
-# #         self.right_frame = RightFrame(self, self.manager)
-# #         self.right_frame.grid(row=0, column=2, sticky='nsew')
-# #
-# #         self.manager.load_widgets(self.left_frame.get_widgets())
 
 
 class App(ctk.CTk):
@@ -439,6 +409,7 @@ class App(ctk.CTk):
 
         # from context set global localisation instance
         self.localisation = localisation
+        self.manager = manager
 
         self.attributes('-topmost', True)  # for easier testing, can be removed if needed
 

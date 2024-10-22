@@ -7,6 +7,7 @@ from gui.widgets import TextBlockSegment
 # styles
 from styles.padding import *
 
+
 class StatusFrame(BaseFrame):
     def __init__(self,
                  parent,
@@ -28,3 +29,7 @@ class StatusFrame(BaseFrame):
             fill='x',
             padx=pad_5, pady=pad_5
         )
+
+        self.manager.load_widgets({
+            'status': self.status
+        })

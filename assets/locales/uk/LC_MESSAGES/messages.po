@@ -61,3 +61,5 @@ msgstr "Ймовірність"
 msgid "table_placeholder"
 msgstr "-\_(0_o)_/-\nДані відсутні"
 
+msgid "guessed_chars"
+msgstr "Вгадані символи"

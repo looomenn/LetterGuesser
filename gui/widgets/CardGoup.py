@@ -79,3 +79,13 @@ class CardGroup(BaseFrame):
         card = self.get_card(key)
         if card:
             card.reset()
+
+    def reset_all(self) -> None:
+        """
+        Resets all cards in the group
+        :return: None
+        """
+        for card in self.cards:
+            card = self.get_card(card)
+            card.reset()
+

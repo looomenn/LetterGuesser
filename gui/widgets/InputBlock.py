@@ -23,6 +23,7 @@ class InputBlock(BaseFrame):
         super().__init__(parent, transparent_bg=True, **kwargs)
 
         self.input_var = ctk.StringVar(value='')
+        self.placeholder = loc_placeholder_key
 
         # label for the input
         self.label = ctk.CTkLabel(
@@ -49,7 +50,7 @@ class InputBlock(BaseFrame):
             font=ctk.CTkFont(
                 family=font,
                 size=text_small
-            ),
+            )
         )
 
         self.localisation.bind(self.input_field, loc_placeholder_key, self.update_input)
@@ -60,9 +61,12 @@ class InputBlock(BaseFrame):
         )
 
         if is_disabled:
-            self.disable_input()
+            self.disable()
 
         self.input_field.bind('<Return>', self.input_handler)
+
+    def reset(self):
+        self.localisation.bind(self.input_field, self.placeholder, self.update_input)
 
     def input_handler(self, event):
         self.manager.input_handler(self.get_input())
@@ -76,11 +80,10 @@ class InputBlock(BaseFrame):
     def update_input(self, new_value):
         self.input_var.set(new_value)
 
-    def enable_input(self):
+    def enable(self):
         self.input_field.configure(state='normal')
         self.input_field.configure(text_color=ctk.ThemeManager.theme['CTkEntry']['text_color'])
 
-    def disable_input(self):
-        self.input_field.focus()
+    def disable(self):
         self.input_field.configure(state='disabled')
         self.input_field.configure(text_color=ctk.ThemeManager.theme['CTkEntry']['placeholder_text_color'])
