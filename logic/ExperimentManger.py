@@ -154,7 +154,7 @@ class ExperimentManager:
             return
 
         self.prob_table.reset_table()
-        self.attempts_table.reset_table()
+        self.attempts_table.reset()
 
         alphabet = self.localisation.get_alphabet()
 

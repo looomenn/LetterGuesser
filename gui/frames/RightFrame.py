@@ -1,7 +1,7 @@
 # frames
 from .BaseFrame import BaseFrame
 from .ProbabilityTable import ProbabilityTable
-from .AttemptsTable import AttemptsTable
+from .AttemptsList import AttemptsTable
 
 from styles.padding import *
 
@@ -15,7 +15,7 @@ class RightFrame(BaseFrame):
         self.prob_table = ProbabilityTable(self, alphabet_len)
         self.add_widget(self.prob_table, side='top', pady=(pad_0, pad_2))
 
-        self.attempts_table = AttemptsTable(self, alphabet_len)
+        self.attempts_table = AttemptsTable(self)
         self.add_widget(self.attempts_table, side='bottom', pady=(pad_2, pad_0))
 
         self.manager.load_widgets({

@@ -7,4 +7,3 @@ base_fill_1 = ('#e1e1e2', "#333333")
 
 text_primary = ('#1a1a1a', '#FFFFFF')
 text_secondary = ('#5f5f5f', '#B8B8B8')
-

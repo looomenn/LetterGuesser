@@ -116,10 +116,10 @@ class Button(ctk.CTkButton):
 
     def enable(self):
         self.is_disabled = False
-        self.configure(state='normal', cursor='hand2')
+        self.configure(state='normal')
         self.set_style()
 
     def disable(self):
-        self.configure(state='disabled', cursor='no')
+        self.configure(state='disabled')
         self.is_disabled = True
         self.set_style()

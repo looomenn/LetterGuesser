@@ -43,7 +43,7 @@ class OptionMenu(ctk.CTkOptionMenu):
         self.localisation.bind(self, label_key, self.update_loc)
 
     def disable(self):
-        self.configure(state='disabled', cursor='no')
+        self.configure(state='disabled')
 
     def enable(self):
         self.configure(state='normal', cursor='hand2')

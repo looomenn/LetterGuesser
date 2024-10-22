@@ -6,7 +6,7 @@ from .RightFrame import RightFrame
 from .LeftFrame import LeftFrame
 from .StatusFrame import StatusFrame
 from .ProbabilityTable import ProbabilityTable
-from .AttemptsTable import AttemptsTable
+from .AttemptsList import AttemptsTable
 
 __all__ = [
     'HeaderFrame',
@@ -16,5 +16,5 @@ __all__ = [
     'LeftFrame',
     'StatusFrame',
     'ProbabilityTable',
-    'AttemptsTable'
+    'AttemptsList'
 ]
