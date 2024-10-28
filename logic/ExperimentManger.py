@@ -1,11 +1,11 @@
 # core
-import gui
+
+import gui  # DEPRECATED in v2.0.0
 import random
 
 # utils
 from config import *
 from .utils import *
-
 
 class ExperimentManager:
     _instance = None
@@ -15,27 +15,22 @@ class ExperimentManager:
             cls._instance = super(ExperimentManager, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self,
-                 localisation,
-                 ):
-
+    def __init__(self, localisation):
         # avoid re-init
         if hasattr(self, 'initialized'):
             print('Experiment Manager already initialized')
             return
 
-        # cached widgets / frames
+        self.localisation = localisation
+
         self.cards: gui.widgets.CardGroup | None = None
         self.input: gui.widgets.InputBlock | None = None
         self.status: gui.widgets.TextBlockSegment | None = None
         self.actions: gui.widgets.ButtonGroup | None = None
         self.used_chars: gui.widgets.TextBlockSegment | None = None
         self.given_text: gui.widgets.TextBlockSegment | None = None
-
         self.prob_table: gui.frames.ProbabilityTable | None = None
         self.attempts_table: gui.frames.AttemptsTable | None = None
-
-        self.localisation = localisation
 
         self.text = ""
         self.next_char = ""
