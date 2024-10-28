@@ -1,7 +1,6 @@
 """ Main context file """
 
 from config import APP_DEFAULT_LANGUAGE_CODE
-
 from logic.ExperimentManger import ExperimentManager
 from logic.Localisation import Localisation
 
