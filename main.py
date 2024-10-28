@@ -10,12 +10,8 @@ from gui.frames import *
 from config import *
 from styles import *
 
-
 from logic import utils
 from context import localisation, manager
-# from logic.ExperimentManger import ExperimentManger
-
-ctk.set_appearance_mode('dark')
 
 
 class App(ctk.CTk):
