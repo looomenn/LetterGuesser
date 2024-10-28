@@ -63,7 +63,7 @@ class BaseScrollFrame(ctk.CTkScrollableFrame):
 
     def show_placeholder(self):
         if self.placeholder:
-            self.placeholder.pack(pady=(200, 0), expand=True)
+            self.placeholder.pack(pady=(100, 0), expand=True)
 
     def hide_placeholder(self):
         if self.placeholder:
