@@ -2,7 +2,6 @@
 LetterGuesser
 Author: Ange1o
 License: MIT
-Version: v6
 """
 
 import customtkinter as ctk
