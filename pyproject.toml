@@ -1,0 +1,48 @@
+[tool.poetry]
+name = 'letterguesser'
+version = '0.1.0'
+description = 'Cool letter guesser program'
+authors = ['ange1o <etew0z1a@anonaddy.me>']
+readme = 'README.md'
+license = 'MIT'
+
+[tool.poetry.dependencies]
+python  = '>=3.10, <3.14'
+customtkinter = "^5.2.2"
+ctktable = "^1.1"
+
+[tool.poetry.group.dev.dependencies]
+pyinstaller = "^6.11.0"
+pytest = "^8.3.3"
+mypy = "^1.13.0"
+flake8 = "^7.1.1"
+pytest-cov = "^6.0.0"
+
+[tool.flake8]
+max-line-length = 160
+exclude = ["venv", "build", "dist", "__pycache__"]
+
+[tool.pytest.ini_options]
+addopts= "--cov letterguesser"
+testpaths = [
+    "tests"
+]
+
+[tool.mypy]
+mypy_path = "letterguesser"
+check_untyped_defs = true
+disallow_any_generics = true
+ignore_missing_imports = true
+no_implicit_optional = true
+show_error_codes = true
+strict_equality = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+no_implicit_reexport = true
+
+[build-system]
+build-backend = ['poetry-core']
+requires = 'poetry.core.masonry.api'
+
