@@ -1,6 +1,8 @@
 name: Bundle
 
-on: [ push, pull_request ]
+on:
+  - push
+  - pull_request
 
 jobs:
   bundle:
@@ -8,15 +10,16 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
+        python-version: ['3.10']
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: ${{ matrix.python-version }}
 
       - name: Install Poetry and PyInstaller
         run: |
