@@ -1,4 +1,4 @@
-name: Tests
+name: Tox
 
 on:
   - push
@@ -22,7 +22,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Poetry
-        run: curl -sSL https://install.python-poetry.org | python3 -
+        run: |  
+          curl -sSL https://install.python-poetry.org | python3 -
 
       - name: Configure Poetry
         run: poetry config virtualenvs.create false
@@ -34,4 +35,5 @@ jobs:
         run: pip install tox
 
       - name: Run Tox
-        run: tox
+        run: | 
+          tox
