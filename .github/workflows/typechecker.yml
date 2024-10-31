@@ -28,4 +28,4 @@ jobs:
         run: poetry install --no-root --only dev
 
       - name: Run Type Checking with mypy
-        run: mypy letterguesser
+        run: poetry run mypy letterguesser
