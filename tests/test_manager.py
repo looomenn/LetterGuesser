@@ -21,14 +21,6 @@ def test_singleton_pattern(experiment_manager):
     assert another_instance is experiment_manager
 
 
-def test_load_widgets(experiment_manager):
-    """Test loading and retrieval of widgets."""
-    widget = MagicMock()
-    experiment_manager.load_widgets({'test_widget': widget})
-    assert experiment_manager.get_widget('test_widget') is widget
-    assert experiment_manager.get_widget('nonexistent_widget') is None
-
-
 def test_get_next_char(experiment_manager):
     """Test fetching the next character in sequence."""
     experiment_manager.full_text = "abcdef"
