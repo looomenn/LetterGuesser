@@ -10,6 +10,7 @@ license = 'MIT'
 python  = '>=3.10, <3.14'
 customtkinter = "^5.2.2"
 ctktable = "^1.1"
+babel = "^2.16.0"
 
 [tool.poetry.group.dev.dependencies]
 pyinstaller = "^6.11.0"
@@ -17,10 +18,8 @@ pytest = "^8.3.3"
 mypy = "^1.13.0"
 flake8 = "^7.1.1"
 pytest-cov = "^6.0.0"
-
-[tool.flake8]
-max-line-length = 160
-exclude = ["venv", "build", "dist", "__pycache__"]
+polib = "^1.2.0"
+tox = "^4.23.2"
 
 [tool.pytest.ini_options]
 addopts= "--cov letterguesser"
@@ -29,7 +28,7 @@ testpaths = [
 ]
 
 [tool.mypy]
-mypy_path = "letterguesser"
+mypy_path = "."
 check_untyped_defs = true
 disallow_any_generics = true
 ignore_missing_imports = true
