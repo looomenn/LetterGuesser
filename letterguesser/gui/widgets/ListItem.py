@@ -1,29 +1,37 @@
+"""
+ListItem widget for displaying individual data entries in a list.
+
+Each item displays data with optional alternating row colors.
+"""
+
 import customtkinter as ctk
 
 from letterguesser.gui.frames.BaseFrame import BaseFrame
-
-from letterguesser.styles.padding import pad_0, pad_2
 from letterguesser.styles.font import (
     font,
     text_small,
     text_small_height
 )
+from letterguesser.styles.padding import pad_0, pad_2
 
 
 class ListItem(BaseFrame):
-    def __init__(self,
-                 parent,
-                 data,
-                 is_odd=False,
-                 **kwargs
-                 ):
+    """A list item to display structured data."""
+
+    def __init__(
+            self,
+            parent,
+            data,
+            is_odd=False,
+            **kwargs
+    ):
         """
-        A list item to display data in the structured fromat.
+        List item to display data in the structured format.
+
         :param parent: Parent widget.
         :param data: A dict or tuple containing data to display
         :param is_odd: Determines the background (for row alternating)
         """
-
         super().__init__(parent, **kwargs)
 
         self.data = data
@@ -82,13 +90,35 @@ class ListItem(BaseFrame):
                 size=text_small
             )
         )
-        self.sub.grid(row=1, column=0, columnspan=2, sticky='w', padx=pad_2, pady=(pad_0, pad_2))
+        self.sub.grid(row=1, column=0, columnspan=2, sticky='w', padx=pad_2,
+                      pady=(pad_0, pad_2)
+                      )
 
-    def update_leading(self, text, value):
+    def update_leading(self, text: str, value: str) -> None:
+        """
+        Update the leading label text.
+
+        :param text: The leading label text.
+        :param value: The corresponding value for the label.
+        :return: None
+        """
         self.leading.configure(text=f"{text}: {value}")
 
-    def update_trailing(self, text, value):
+    def update_trailing(self, text: str, value: str) -> None:
+        """
+        Update the trailing label text.
+
+        :param text: The trailing label text.
+        :param value: The corresponding value for the label.
+        :return: None
+        """
         self.trailing.configure(text=f"{text}: {value}")
 
-    def update_sub(self, value):
+    def update_sub(self, value: str) -> None:
+        """
+        Update the sub label text.
+
+        :param value: The subtext value to update.
+        :return: None
+        """
         self.sub.configure(text=value)

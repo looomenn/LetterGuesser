@@ -1,25 +1,55 @@
+"""
+Button widget with customizable styles and localization support.
+
+This widget provides a styled button with various configurations (e.g., default,
+primary, danger) and supports localization for its label.
+"""
+
+from typing import Callable, Dict, Optional, Tuple, TypedDict
+
 import customtkinter as ctk
 
+import letterguesser.styles.buttons as buttons
 from letterguesser.gui.frames.BaseFrame import localisation
-from letterguesser.styles.buttons import *  # used all of them
+
+
+class ColorState(TypedDict):
+    """Represents the color state for a specific attribute of a button."""
+
+    enabled: Tuple[str, str]
+    disabled: Tuple[str, str]
+
+
+class Style(TypedDict):
+    """Defines the complete style configuration for a button."""
+
+    fg_color: ColorState
+    border_color: ColorState
+    hover_color: Tuple[str, str]
+    text_color: Tuple[str, str]
+    text_color_disabled: Tuple[str, str]
 
 
 class Button(ctk.CTkButton):
-    def __init__(self,
-                 parent,
-                 label_key: str,
-                 style: str = 'default',
-                 command=None,
-                 is_disabled: bool = False,
-                 **kwargs
-                 ):
+    """A customizable button with styles, localization, and enable/disable states."""
+
+    def __init__(
+            self,
+            parent,
+            label_key: str,
+            style: str = 'default',
+            command: Optional[Callable[[str], None]] = None,
+            is_disabled: bool = False,
+            **kwargs
+    ):
         """
-        Inits Button widget.
+        Initialise Button widget.
+
         :param parent: The parent widget were button should be placed.
         :param loc_label_key: Localisation key for the button label.
         :param style: Variant of the button (primary, secondary, danger)
         :param command: Function to assign with button (when clicking)
-        :param is_disabled: Whether the button should be disabled when from the beginning.
+        :param is_disabled: Whether the button starts disabled, by default False.
         :param kwargs: Additional keyword arguments.
         """
         self.localisation = localisation
@@ -28,24 +58,17 @@ class Button(ctk.CTkButton):
 
         self.key = label_key
 
-        # styles
-        self.fg_color: str | None = None
-        self.text_color: str | None = None
-        self.border_color: str | None = None
-        self.hover_color: str | None = None
-        self.text_color_disabled: str | None = None
-
         super().__init__(
             parent,
             text='',
-            height=BUTTON_HEIGHT,
+            height=buttons.BUTTON_HEIGHT,
             border_width=1,
             command=command,
             **kwargs
         )
 
         self.propagate(False)
-        self.configure(width=BUTTON_WIDTH, height=BUTTON_HEIGHT)
+        self.configure(width=buttons.BUTTON_WIDTH, height=buttons.BUTTON_HEIGHT)
 
         self.set_style()
 
@@ -58,66 +81,95 @@ class Button(ctk.CTkButton):
         )
 
     def reset(self):
+        """Reset the button."""
         self.localisation.bind(self, self.key)
 
     def set_command(self, function):
+        """Set specified command for the button."""
         self.configure(command=function)
 
     def set_style(self):
-        if self.style == 'default':
-            if self.is_disabled:
-                self.fg_color = BUTTON_DEFAULT_FG_COLOR_DISABLED
-                self.border_color = BUTTON_DEFAULT_BORDER_DISABLED
-            else:
-                self.fg_color = BUTTON_DEFAULT_FG_COLOR
-                self.border_color = BUTTON_DEFAULT_BORDER
+        """Apply style based on the button's state (enabled/disabled) and style."""
+        styles: Dict[str, Style] = {
+            'default': {
+                'fg_color': {
+                    'enabled': buttons.BUTTON_DEFAULT_FG_COLOR,
+                    'disabled': buttons.BUTTON_DEFAULT_FG_COLOR_DISABLED
+                },
+                'border_color': {
+                    'enabled': buttons.BUTTON_DEFAULT_BORDER,
+                    'disabled': buttons.BUTTON_DEFAULT_BORDER_DISABLED
+                },
+                'hover_color': buttons.BUTTON_DEFAULT_FG_COLOR_HOVER,
+                'text_color': buttons.BUTTON_DEFAULT_TEXT,
+                'text_color_disabled': buttons.BUTTON_DEFAULT_TEXT_DISABLED
+            },
+            'primary': {
+                'fg_color': {
+                    'enabled': buttons.BUTTON_PRIMARY_FG_COLOR,
+                    'disabled': buttons.BUTTON_PRIMARY_FG_COLOR_DISABLED
+                },
+                'border_color': {
+                    'enabled': buttons.BUTTON_PRIMARY_BORDER,
+                    'disabled': buttons.BUTTON_PRIMARY_BORDER_DISABLED
+                },
+                'hover_color': buttons.BUTTON_PRIMARY_FG_COLOR_HOVER,
+                'text_color': buttons.BUTTON_PRIMARY_TEXT,
+                'text_color_disabled': buttons.BUTTON_PRIMARY_TEXT_DISABLED
+            },
+            'danger': {
+                'fg_color': {
+                    'enabled': buttons.BUTTON_DANGER_FG_COLOR,
+                    'disabled': buttons.BUTTON_DANGER_FG_COLOR_DISABLED
+                },
+                'border_color': {
+                    'enabled': buttons.BUTTON_DANGER_BORDER,
+                    'disabled': buttons.BUTTON_DANGER_BORDER_DISABLED
+                },
+                'hover_color': buttons.BUTTON_DANGER_FG_COLOR_HOVER,
+                'text_color': buttons.BUTTON_DANGER_TEXT,
+                'text_color_disabled': buttons.BUTTON_DANGER_TEXT_DISABLED
+            }
+        }
 
-            self.text_color_disabled = BUTTON_DEFAULT_TEXT_DISABLED
-            self.hover_color = BUTTON_DEFAULT_FG_COLOR_HOVER
-            self.text_color = BUTTON_DEFAULT_TEXT
+        state: str = 'disabled' if self.is_disabled else 'enabled'
+        style_config = styles.get(self.style)
 
-        elif self.style == 'primary':
-            if self.is_disabled:
-                self.fg_color = BUTTON_PRIMARY_FG_COLOR_DISABLED
-                self.border_color = BUTTON_PRIMARY_BORDER_DISABLED
-            else:
-                self.fg_color = BUTTON_PRIMARY_FG_COLOR
-                self.border_color = BUTTON_PRIMARY_BORDER
+        if style_config:
+            fg_color = style_config['fg_color'].get(state)
+            border_color = style_config['border_color'].get(state)
 
-            self.text_color_disabled = BUTTON_PRIMARY_TEXT_DISABLED
-            self.hover_color = BUTTON_PRIMARY_FG_COLOR_HOVER
-            self.text_color = BUTTON_PRIMARY_TEXT
+            hover_color = style_config['hover_color']
+            text_color = style_config['text_color']
+            text_color_disabled = style_config['text_color_disabled']
+        else:
+            fg_color = buttons.BUTTON_DEFAULT_FG_COLOR
+            border_color = buttons.BUTTON_DEFAULT_BORDER
 
-        elif self.style == 'danger':
-
-            if self.is_disabled:
-                self.fg_color = BUTTON_DANGER_FG_COLOR_DISABLED
-                self.border_color = BUTTON_DANGER_BORDER_DISABLED
-            else:
-                self.fg_color = BUTTON_DANGER_FG_COLOR
-                self.border_color = BUTTON_DANGER_BORDER
-
-            self.text_color_disabled = BUTTON_DANGER_TEXT_DISABLED
-            self.hover_color = BUTTON_DANGER_FG_COLOR_HOVER
-            self.text_color = BUTTON_DANGER_TEXT
+            hover_color = buttons.BUTTON_DEFAULT_FG_COLOR_HOVER
+            text_color = buttons.BUTTON_DEFAULT_TEXT
+            text_color_disabled = buttons.BUTTON_DEFAULT_TEXT_DISABLED
 
         self.configure(
-            fg_color=self.fg_color,
-            hover_color=self.hover_color,
-            border_color=self.border_color,
-            text_color=self.text_color,
-            text_color_disabled=self.text_color_disabled
+            fg_color=fg_color,
+            hover_color=hover_color,
+            border_color=border_color,
+            text_color=text_color,
+            text_color_disabled=text_color_disabled
         )
 
     def get_state(self):
+        """Return the state of the button."""
         return self.cget('state')
 
     def enable(self):
+        """Enable the button, making it clickable."""
         self.is_disabled = False
         self.configure(state='normal')
         self.set_style()
 
     def disable(self):
+        """Disable the button, preventing interaction."""
         self.configure(state='disabled')
         self.is_disabled = True
         self.set_style()

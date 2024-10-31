@@ -1,4 +1,9 @@
-""" Widget-related variables """
+"""
+Button style configurations for LetterGuesser.
+
+Defines various button styles, including colors for different states
+(default, primary, and danger), hover effects, and disabled states.
+"""
 
 # --------- Button ---------
 BUTTON_HEIGHT: int = 40

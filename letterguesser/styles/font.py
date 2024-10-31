@@ -1,4 +1,9 @@
-""" font vars """
+"""
+Font settings and text sizes for LetterGuesser.
+
+Defines font types, sizes, and line heights used across the application,
+ensuring consistency and readability in the UI.
+"""
 
 # general settings
 font: str = 'Segoe UI'
@@ -11,5 +16,3 @@ height_multiplier: float = 1.3
 text_small_height:  int = int(text_small * height_multiplier)
 text_medium_height: int = int(text_medium * height_multiplier)
 text_large_height:  int = int(text_large * height_multiplier)
-
-

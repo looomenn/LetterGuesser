@@ -1,4 +1,9 @@
-""" colour vars """
+"""
+Color definitions for base surfaces, borders, and text.
+
+Defines consistent color schemes for use across the application's UI,
+including surface, border, and text colors.
+"""
 
 # base colours
 base_surface_1 = ('#FFFFFF', '#141414')

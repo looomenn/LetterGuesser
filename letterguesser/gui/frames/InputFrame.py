@@ -1,11 +1,25 @@
-from letterguesser.gui.widgets import TextBlockSegment, InputBlock, ButtonGroup
+"""
+InputFrame for user input and control buttons.
+
+Provides an input block, action buttons, and text displays.
+"""
+from typing import Any, Callable
+
+from letterguesser.gui.widgets import ButtonGroup, InputBlock, TextBlockSegment
 from letterguesser.styles.padding import pad_3, pad_4, pad_5
 
 from .BaseFrame import BaseFrame
 
 
 class InputFrame(BaseFrame):
+    """Frame with input fields and controls for managing user input."""
+
     def __init__(self, parent, **kwargs):
+        """
+        Initialize InputFrame with input fields and action buttons.
+
+        :param parent: Parent tkinter object for the frame.
+        """
         super().__init__(parent, **kwargs)
 
         self.random_text = TextBlockSegment(
@@ -97,31 +111,37 @@ class InputFrame(BaseFrame):
         self.manager.block_events['update'].subscribe(self.block_update_text)
         self.manager.block_events['reset'].subscribe(self.block_reset)
 
-    def block_reset(self, block_name: str):
+    def block_reset(self, block_name: str) -> None:
+        """Reset a specified text block."""
         block = self.local_blocks.get(block_name)
 
         if block:
             block.reset()
 
-    def block_update_text(self, block_name: str, text: str):
+    def block_update_text(self, block_name: str, text: str) -> None:
+        """Update text in a specified block."""
         block = self.local_blocks.get(block_name)
 
         if block:
             block.update_value(text)
 
-    def block_clear(self, block_name: str):
+    def block_clear(self, block_name: str) -> None:
+        """Clear the content of a specified block."""
         block = self.local_blocks.get(block_name)
 
         if block:
             block.clear()
 
-    def input_clear(self):
+    def input_clear(self) -> None:
+        """Clear the main input field."""
         self.input.clear()
 
-    def input_reset(self):
+    def input_reset(self) -> None:
+        """Reset the main input field to default."""
         self.input.reset()
 
-    def input_set_state(self, state):
+    def input_set_state(self, state: str) -> None:
+        """Set the state of the input field (enable/disable)."""
         if state == 'disable':
             self.input.disable()
         elif state == 'enable':
@@ -129,10 +149,12 @@ class InputFrame(BaseFrame):
         else:
             self.input.disable()
 
-    def update_random_text(self, text):
+    def update_random_text(self, text: str) -> None:
+        """Update the random text display."""
         self.random_text.update_value(text)
 
-    def button_set_state(self, button_name, state):
+    def button_set_state(self, button_name: str, state: str) -> None:
+        """Set the state of a specified button."""
         button = self.actions.get_button(button_name)
 
         if button:
@@ -143,14 +165,17 @@ class InputFrame(BaseFrame):
             else:
                 button.enable()
 
-    def button_update_label(self, button_name, label):
+    def button_update_label(self, button_name: str, label: str) -> None:
+        """Update a button's label based on localization."""
         button = self.actions.get_button(button_name)
 
         if button and label:
             self.localisation.bind(button, label)
 
-    def button_set_command(self, button_name, command):
+    def button_set_command(self, button_name: str, command: Callable[[str], Any])\
+            -> None:
+        """Set a button's command dynamically."""
         button = self.actions.get_button(button_name)
 
-        if button and command:
+        if button:
             button.set_command(command)

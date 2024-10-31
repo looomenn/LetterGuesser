@@ -1,7 +1,11 @@
-""" paddings """
+"""
+Padding values for consistent spacing in the UI.
 
-# base = 4px
-pad_0: int = 0  #: medium padding.
+Defines padding constants to maintain uniform spacing across the application,
+organized in increments to easily apply specific spacing needs.
+"""
+
+pad_0: int = 0
 pad_1: int = 4
 pad_2: int = 8
 pad_3: int = 12

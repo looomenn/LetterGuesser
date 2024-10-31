@@ -1,32 +1,36 @@
-""" Gives ability to create card groups """
-from .Card import Card
+"""
+CardGroup widget to manage a group of Card instances.
+
+This class allows the creation and management of multiple `Card` widgets.
+"""
 
 from letterguesser.gui.frames.BaseFrame import BaseFrame
 from letterguesser.styles.padding import pad_0, pad_4
 
+from .Card import Card
+
 
 class CardGroup(BaseFrame):
-    def __init__(self,
-                 parent,
-                 num_cards,
-                 configs,
-                 **kwargs
-                 ):
+    """Manages a collection of `Card` widgets."""
+
+    def __init__(
+            self,
+            parent,
+            num_cards,
+            configs,
+            **kwargs
+    ):
         """
-        Initialize the CardGroup
+        Init the CardGroup.
+
         :param parent: The parent widget.
         :param num_cards: Number of cards to create.
-        :param configs: A list of dictionaries containing:
-                    {
-                        'label_key': str (localisation key for card label)
-                        'initial_value' str/int (initial value for the card).
-                        'var_type': 'str' or 'int' (type of value to store)
-                    }.
+        :param configs: Config for each card with label_key, initial_value, var_type.
         :param kwargs: Additional keyword arguments.
         """
         super().__init__(parent, transparent_bg=True, **kwargs)
 
-        self.cards = {}
+        self.cards: dict[str, Card] = {}
 
         for i in range(num_cards):
             config = configs[i]
@@ -51,7 +55,8 @@ class CardGroup(BaseFrame):
 
     def get_card(self, key) -> Card | None:
         """
-        Returns a specific card by its key.
+        Return a specific card by its key.
+
         :param key: The key of the card (e.g., 'card_<label_key>')
         :return: The Card instance or None if not found.
         """
@@ -59,7 +64,8 @@ class CardGroup(BaseFrame):
 
     def update_card_value(self, key: str, value: str | int) -> None:
         """
-        Updates the value of a specific card.
+        Update the value of a specific card.
+
         :param key: The key of the card (e.g., 'card_<label_key>').
         :param value: The new value to set in the card.
         :return: None
@@ -70,21 +76,22 @@ class CardGroup(BaseFrame):
 
     def reset(self, key: str) -> None:
         """
-        Resets the value of a specific card.
+        Reset the value of a specific card.
+
         :param key: The key of the card (e.g., 'card_<label_key>')
         :return: None
         """
-
         card = self.get_card(key)
         if card:
             card.reset()
 
     def reset_all(self) -> None:
         """
-        Resets all cards in the group
+        Reset all cards in the group.
+
         :return: None
         """
         for card in self.cards:
-            card = self.get_card(card)
-            card.reset()
-
+            card_instance = self.get_card(card)
+            if card_instance:
+                card_instance.reset()

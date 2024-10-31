@@ -1,7 +1,40 @@
-""" Main context file """
+"""
+Application context for LetterGuesser.
+
+This module provides globally accessible instances of essential components, such as
+logging, localisation, and experiment management, which are shared throughout the
+application. By centralizing these instances, the application ensures consistency in
+configuration and reduces redundancy.
+
+Components
+----------
+localisation : Localisation
+    A global instance of the`Localisation` class, initialized with the default
+    language code and the locale directory path. This instance handles all
+    localisation functionality.
+
+logger : logging.Logger
+    The global logger instance configured with a standardized output
+    format. This logger is used across the application to log messages consistently.
+
+manager : ExperimentManager
+    A global instance of the `ExperimentManager` class, initialized with the
+    localisation and logger instances. Manages experimental
+    workflows and coordinates with other components as needed.
+
+Usage
+----------
+These components can be imported directly from `context` to ensure
+consistent use across the application:
+
+    from letterguesser.context import localisation, logger, manager
+
+    logger.info("Application started")
+    manager.start_experiment()
+"""
 import logging.config
 
-from config import APP_DEFAULT_LANGUAGE_CODE
+from letterguesser.config import APP_DEFAULT_LANGUAGE_CODE
 from letterguesser.logic.ExperimentManager import ExperimentManager
 from letterguesser.logic.Localisation import Localisation
 

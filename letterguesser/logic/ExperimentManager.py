@@ -1,19 +1,43 @@
+"""
+ExperimentManager for managing the experiment flow, events, and user input.
+
+This singleton class coordinates the experiment flow, including handling
+user input, updating the UI, and managing experiment states.
+"""
+
 import random
-import warnings
 
 from .Event import Event
 from .utils import load_texts
 
 
 class ExperimentManager:
+    """Singleton class to manage experiment flow and events."""
+
     _instance = None
 
     def __new__(cls, *args, **kwargs):
+        """
+        Create or return the singleton instance of ExperimentManager.
+
+        Ensures that only one instance of ExperimentManager exists. If an instance
+        already exists, it returns that instance; otherwise, it creates a new one.
+
+        :param args: Positional arguments for initialization.
+        :param kwargs: Keyword arguments for initialization.
+        :return: The single instance of ExperimentManager.
+        """
         if not cls._instance:
             cls._instance = super(ExperimentManager, cls).__new__(cls)
         return cls._instance
 
     def __init__(self, localisation, logger):
+        """
+        Initialize ExperimentManager, loading localisation and setting up events.
+
+        :param localisation: Localisation instance for language and text management.
+        :param logger: Logger instance for logging events and messages.
+        """
         # avoid re-init
         if hasattr(self, 'initialized'):
             print('Experiment Manager already initialized')
@@ -53,10 +77,10 @@ class ExperimentManager:
             'update': Event()
         }
 
-        self.text = ""
-        self.next_char = ""
-        self.full_text = ""
-        self.visible_text = ""
+        self.text: str | None = ""
+        self.next_char: str | None = ""
+        self.full_text: str | None = ""
+        self.visible_text: str | None = ""
 
         # some counters
         self.attempts = 0
@@ -67,30 +91,21 @@ class ExperimentManager:
         self.is_active = False
         self.attempt_counts = [0] * len(self.localisation.get_alphabet())
 
-    def load_widgets(self, widgets: dict) -> None:
-        """
-        Load widgets into ExperimentManager dynamically.
-        DEPRECATED: Use event-based method (see logic/Event class) to communicate with widgets
-
-        :param widgets: A dict. of widgets instances (example: {'probability_frame': ProbabilityTable})
-        """
-        warnings.warn(f'load_widgets() is deprecated and will be removed in a future version', stacklevel=2)
-
-    def get_widget(self, widget_name: str) -> None:
-        """
-        Return a specific widget by its name.
-        DEPRECATED: Use event-based method (see logic/Event class) to communicate with widgets
-
-        :param widget_name: The key name of the widget.
-        :return: The widget instance if found, otherwise None
-        """
-        warnings.warn(f'get_widget() is deprecated and will be removed in a future version', stacklevel=2)
-
     def change_ngram(self, value: str):
+        """
+        Change the n-gram order used for text display.
+
+        :param value: String representation of the new n-gram order.
+        """
         value = value.split(' ')[0].strip()
         self.ngram_order = int(value)
 
-    def get_text(self, lang_code: str):
+    def get_text(self, lang_code: str) -> str | None:
+        """
+        Return full text by `lang_code`.
+
+        :return: The text string currently used in the experiment.
+        """
         text_parts = load_texts(lang_code)
 
         if not text_parts or len(text_parts) < self.min_length:
@@ -100,15 +115,21 @@ class ExperimentManager:
         result = text_parts[start_idx:start_idx + self.min_length]
         return result
 
-    def get_next_char(self):
+    def get_next_char(self) -> str | None:
         """Get the next character that should be guessed based on the visible text."""
+        if not self.visible_text:
+            return None
+
+        if not self.full_text:
+            return None
+
         if len(self.visible_text) < len(self.full_text):
             return self.full_text[len(self.visible_text)]
+
         return None
 
-    def start_experiment(self):
-        """ Starts the experiment """
-
+    def start_experiment(self) -> None:
+        """Initialize and start the experiment, setting up necessary states."""
         self.is_active = True
         self.attempts = 0
 
@@ -116,33 +137,58 @@ class ExperimentManager:
         self.text = self.get_text(self.localisation.get_locale())
 
         # enabling reset button
-        self.button_events['state_change'].notify(button_name='button_reset', state='enable')
+        self.button_events['state_change'].notify(
+            button_name='button_reset',
+            state='enable'
+        )
 
         # changing start button to next experiment button
-        self.button_events['label_change'].notify(button_name='button_start', label='next')
-        self.button_events['state_change'].notify(button_name='button_start', state='disable')
-        self.button_events['command_change'].notify(button_name='button_start', command=self.next_experiment)
+        self.button_events['label_change'].notify(
+            button_name='button_start',
+            label='next'
+        )
+        self.button_events['state_change'].notify(
+            button_name='button_start',
+            state='disable'
+        )
+        self.button_events['command_change'].notify(
+            button_name='button_start',
+            command=self.next_experiment
+        )
 
         # Enabling button to select N order
-        self.button_events['state_change'].notify(button_name='button_char_numbers', state='disable')
+        self.button_events['state_change'].notify(
+            button_name='button_char_numbers',
+            state='disable'
+        )
 
         # text shenanigans
-        self.full_text = self.text
-        self.visible_text = self.full_text[:self.ngram_order]  # get part of the text base on the N
+        self.full_text = self.text or ''
+        self.visible_text = self.full_text[:self.ngram_order]
         self.next_char = self.get_next_char()
 
         # display random(given) text in the TextBlockSegment
-        self.block_events['update'].notify(block_name='random_text', text=self.visible_text)
+        self.block_events['update'].notify(
+            block_name='random_text',
+            text=self.visible_text
+        )
 
         # input shenanigans
         self.input_events['clear'].notify()
         self.input_events['state_change'].notify(state='enable')
 
         # cards shenanigans
-        self.card_events['update'].notify(card_name='card_attempts', value=0)
-        self.card_events['update'].notify(card_name='card_experiment_number', value=self.experiment_number)
+        self.card_events['update'].notify(
+            card_name='card_attempts',
+            value=0
+        )
+        self.card_events['update'].notify(
+            card_name='card_experiment_number',
+            value=self.experiment_number
+        )
 
-    def next_experiment(self):
+    def next_experiment(self) -> None:
+        """Progress to the nex experiment."""
         self.experiment_number += 1
         self.used_letters.clear()
 
@@ -155,7 +201,7 @@ class ExperimentManager:
         self.start_experiment()
 
     def reset_experiment(self):
-
+        """Reset the experiment state and UI components."""
         # flag check for language toggle
         if not self.is_active:
             return
@@ -179,22 +225,39 @@ class ExperimentManager:
         self.input_events['reset'].notify()  # reset input block
 
         # block events
-        self.block_events['reset'].notify(block_name='status')  # reset user chars block
-        self.block_events['reset'].notify(block_name='used_chars')  # reset user chars block
-        self.block_events['reset'].notify(block_name='random_text')  # reset random text block
+        self.block_events['reset'].notify(
+            block_name='status'
+        )  # reset user chars block
+
+        self.block_events['reset'].notify(
+            block_name='used_chars'
+        )  # reset user chars block
+
+        self.block_events['reset'].notify(
+            block_name='random_text'
+        )  # reset random text block
 
         # button events
-        self.button_events['state_change'].notify(button_name='button_start', state='enable')
-        self.button_events['state_change'].notify(button_name='button_reset', state='disable')
-        self.button_events['state_change'].notify(button_name='button_char_numbers', state='enable')
+        self.button_events['state_change'].notify(
+            button_name='button_start',
+            state='enable'
+        )
+        self.button_events['state_change'].notify(
+            button_name='button_reset',
+            state='disable'
+        )
+        self.button_events['state_change'].notify(
+            button_name='button_char_numbers',
+            state='enable'
+        )
 
-    def input_handler(self, user_input) -> str:
+    def input_handler(self, user_input: str) -> str:
         """
-        Main input handler
-        :param user_input: User input from InputBlock
-        :return: String 'correct' or 'incorrect'
-        """
+        Process user input and update experiment state accordingly.
 
+        :param user_input: Input text from the user.
+        :return: Result string indicating if the input was correct.
+        """
         alphabet = self.localisation.get_alphabet()
 
         user_input = user_input[0] if len(user_input) > 0 else ''
@@ -221,12 +284,21 @@ class ExperimentManager:
             return 'invalid'  # should never be reached
 
         # updating cards
-        self.card_events['update'].notify(card_name='card_attempts', value=self.attempts)
-        self.card_events['update'].notify(card_name='card_last_char', value=user_input)
+        self.card_events['update'].notify(
+            card_name='card_attempts',
+            value=self.attempts
+        )
+        self.card_events['update'].notify(
+            card_name='card_last_char',
+            value=user_input
+        )
 
         # update text block
         used_letters_str = ' , '.join(self.used_letters)
-        self.block_events['update'].notify(block_name='used_chars', text=used_letters_str)
+        self.block_events['update'].notify(
+            block_name='used_chars',
+            text=used_letters_str
+        )
 
         next_char = self.next_char
 
@@ -238,7 +310,10 @@ class ExperimentManager:
 
             self.calc_prob()
 
-            self.button_events['state_change'].notify(button_name='button_start', state='enable')
+            self.button_events['state_change'].notify(
+                button_name='button_start',
+                state='enable'
+            )
 
             self.table_events['update'].notify(
                 table_name='attempts_table',
@@ -250,7 +325,10 @@ class ExperimentManager:
             self.block_events['rebind'].notify(block_name='status', key='win')
 
             self.visible_text = self.full_text
-            self.block_events['update'].notify(block_name='random_text', text=self.visible_text)
+            self.block_events['update'].notify(
+                block_name='random_text',
+                text=self.visible_text
+            )
 
             self.input_events['clear'].notify()
             self.input_events['state_change'].notify(state='disable')
@@ -260,8 +338,12 @@ class ExperimentManager:
             self.block_events['rebind'].notify(block_name='status', key='incorrect')
             return 'incorrect'
 
-    def calc_prob(self):
-        """ Calculates the probability based on attempts. Inserts them into probability table"""
+    def calc_prob(self) -> None:
+        """
+        Calculate the probability within the current experiment parameters.
+
+        :return: None
+        """
         for i, count in enumerate(self.attempt_counts):
             if count > 0:
                 prob = count / sum(self.attempt_counts)

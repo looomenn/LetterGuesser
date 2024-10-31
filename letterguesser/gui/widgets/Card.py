@@ -1,7 +1,12 @@
+"""
+Card widget for displaying a localized label with a dynamic value.
+
+Each card has a label and a value field, supporting localization and value updates.
+"""
+
 import customtkinter as ctk
 
 from letterguesser.gui.frames.BaseFrame import BaseFrame
-from letterguesser.styles.padding import *
 from letterguesser.styles.font import (
     font,
     text_medium,
@@ -9,18 +14,23 @@ from letterguesser.styles.font import (
     text_small,
     text_small_height
 )
+from letterguesser.styles.padding import pad_0, pad_2, pad_3
 
 
 class Card(BaseFrame):
-    def __init__(self,
-                 parent,
-                 loc_label_key,
-                 initial_value,
-                 var_type='str',
-                 **kwargs
-                 ):
+    """Displays a label and a dynamic value."""
+
+    def __init__(
+            self,
+            parent,
+            loc_label_key,
+            initial_value,
+            var_type='str',
+            **kwargs
+    ):
         """
-        Inits a Card.
+        Init a Card.
+
         :param parent: The parent widget.
         :param loc_label_key: The key of the localization label
         :param initial_value: Initial value of the card
@@ -36,7 +46,8 @@ class Card(BaseFrame):
         self.propagate(False)
 
         # var typing shenanigans
-        self.var_value = ctk.StringVar(value=initial_value) if var_type == 'str' else ctk.IntVar(value=initial_value)
+        self.var_value = ctk.StringVar(value=initial_value) \
+            if var_type == 'str' else ctk.IntVar(value=initial_value)
 
         self.value = ctk.CTkLabel(
             self,
@@ -79,10 +90,13 @@ class Card(BaseFrame):
         )
 
     def update_value(self, value: str | int):
+        """Update the displayed value on the card."""
         self.var_value.set(value)
 
     def reset(self):
+        """Reset the card value to the initial value."""
         self.update_value(self.initial_value)
 
     def get_type(self):
+        """Get type of the card."""
         return str if isinstance(self.var_value, ctk.StringVar) else int
