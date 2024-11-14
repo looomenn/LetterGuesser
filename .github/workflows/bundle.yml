@@ -1,8 +1,11 @@
 name: Bundle
 
 on:
-  - push
-  - pull_request
+  push:
+    paths: 'letterguesser/**'
+
+  pull_request:
+    paths: 'letterguesser/**'
 
 jobs:
   bundle:
