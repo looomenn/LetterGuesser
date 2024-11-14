@@ -21,6 +21,9 @@ pytest-cov = "^6.0.0"
 polib = "^1.2.0"
 tox = "^4.23.2"
 
+[tool.poetry.build]
+script = "build.py"
+
 [tool.pytest.ini_options]
 addopts= "--cov letterguesser"
 testpaths = [
@@ -42,6 +45,6 @@ warn_unused_configs = true
 no_implicit_reexport = true
 
 [build-system]
-build-backend = ['poetry-core']
-requires = 'poetry.core.masonry.api'
+requires = ['poetry-core', 'Babel']
+build-backend = 'poetry.core.masonry.api'
 
