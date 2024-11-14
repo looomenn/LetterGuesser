@@ -82,13 +82,13 @@ Install all dependencies
 poetry install
 ```
 
-You also can install only dev dependencies (used for tests)
+You can also install only dev dependencies (used for tests)
 
 ```bash
 poetry install --only dev
 ```
 
-At root level run install this module
+At root level run pip to install as a module
 
 ```bash
 pip install . --user
