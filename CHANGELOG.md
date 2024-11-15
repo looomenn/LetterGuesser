@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased] - 2024-11-15
+
+## Changed
+- Start migration to PyQt6
+- Entry point base from `customtkinter` to `QApplication`
 
 ## [2.0.0-alpha.0] - 2024-11-15
 
