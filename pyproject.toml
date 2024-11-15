@@ -1,6 +1,6 @@
 [tool.poetry]
 name = 'letterguesser'
-version = "1.0.0"
+version = "2.0.0a0"
 description = 'Cool letter guesser program'
 authors = ['ange1o <etew0z1a@anonaddy.me>']
 readme = 'README.md'
@@ -12,9 +12,8 @@ include= [
 
 [tool.poetry.dependencies]
 python  = '>=3.10, <3.14'
-customtkinter = "^5.2.2"
-ctktable = "^1.1"
 babel = "^2.16.0"
+pyqt6 = "^6.7.1"
 
 [tool.poetry.group.dev.dependencies]
 pyinstaller = "^6.11.0"
