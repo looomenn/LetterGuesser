@@ -14,72 +14,65 @@ Options:
 --------
 No options supported
 """
+import sys
 
-import customtkinter as ctk
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
+from PyQt6.QtGui import QKeySequence, QShortcut
 
 from letterguesser.config import APP_SIZE, APP_TITLE
 from letterguesser.context import localisation, manager
-from letterguesser.gui.frames import HeaderFrame, MainFrame
+# from letterguesser.gui.frames import HeaderFrame, MainFrame
 from letterguesser.styles.padding import pad_0, pad_6
 
 
-class App(ctk.CTk):
+class App(QMainWindow):
     """Represent the main application interface."""
 
     def __init__(self):
         """Initialize an instance of the App class."""
         # windows setup
         super().__init__()
-        self.title(APP_TITLE)
+        self.setWindowTitle(APP_TITLE)
+        self.setFixedSize(APP_SIZE[0], APP_SIZE[1])
+        self.center()
 
         # from context set global localisation instance
         self.localisation = localisation
         self.manager = manager
 
-        # offsets to run app in the center of the screen
-        # host display width x height
-        display = (self.winfo_screenwidth(), self.winfo_screenheight())
-        left = int(display[0] / 2 - APP_SIZE[0] / 2)
-        top = int(display[1] / 2 - APP_SIZE[1] / 2)
-        self.geometry(f'{APP_SIZE[0]}x{APP_SIZE[1]}+{left}+{top}')
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        self.main_layout = QVBoxLayout(central_widget)
+        self.main_layout.setContentsMargins(pad_6, pad_6, pad_6, pad_6)
+        self.main_layout.setSpacing(pad_6)
 
-        # windows constraints
-        # precautions, if resizable(false, false) fails
-        self.minsize(APP_SIZE[0], APP_SIZE[1])
-        self.maxsize(APP_SIZE[0], APP_SIZE[1])
-        self.resizable(False, False)
+        #self.header_frame = HeaderFrame(self)
+        #self.main_frame = MainFrame(self)
 
-        # main layout
-        self.rowconfigure(0, weight=0)
-        self.rowconfigure(1, weight=1)
-        self.columnconfigure(0, weight=1)
+        #self.main_layout.addWidget(self.header_frame)
+        #self.main_layout.addWidget(self.main_frame)
 
-        self.header_frame = HeaderFrame(self)
-        self.header_frame.grid(
-            row=0,
-            column=0,
-            sticky='nsew',
-            padx=pad_6,
-            pady=pad_6
-        )
+        self.init_shortcuts()
 
-        self.main_frame = MainFrame(self)
-        self.main_frame.grid(
-            row=1,
-            column=0,
-            sticky='nsew',
-            padx=pad_6,
-            pady=(pad_0, pad_6)
-        )
+    def center(self) -> None:
+        """Center the window on the screen."""
+        screen_geometry = self.screen().availableGeometry()
+        x = (screen_geometry.width() - self.width()) // 2
+        y = (screen_geometry.height() - self.height()) // 2
+        self.move(x, y)
 
-        # key binds
-        self.bind('<Escape>', lambda event: self.quit())
-        self.bind('<Control-l>', lambda event: self.header_frame.toggle_langauge())
+    def init_shortcuts(self):
+        """Initialize key bindings."""
+        escape_shortcut = QShortcut(QKeySequence('Escape'), self)
+        escape_shortcut.activated.connect(self.close)  # ignore IDE highlight
 
-        # run app
-        self.mainloop()
+        #ctrl_l_shortcut = QShortcut(QKeySequence('Ctrl+L'), self)
+        #ctrl_l_shortcut.activated.connect(self.header_frame.toggle_language)
 
 
 if __name__ == "__main__":
-    App()
+    app = QApplication([])  # no input is planned
+    windows = App()
+    windows.show()
+    sys.exit(app.exec())
 # end main
