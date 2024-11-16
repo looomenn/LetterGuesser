@@ -56,10 +56,10 @@ class App(QMainWindow):
 
     def center(self) -> None:
         """Center the window on the screen."""
-        screen_geometry = self.screen().availableGeometry()
-        x = (screen_geometry.width() - self.width()) // 2
-        y = (screen_geometry.height() - self.height()) // 2
-        self.move(x, y)
+        frame_geometry = self.frameGeometry()
+        screen_geometry = self.screen().availableGeometry().center()
+        frame_geometry.moveCenter(screen_geometry)
+        self.move(frame_geometry.topLeft())
 
     def init_shortcuts(self):
         """Initialize key bindings."""
