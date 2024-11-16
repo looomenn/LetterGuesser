@@ -4,22 +4,14 @@ LetterGuesser.
 This app has been released to replace the russian-language version used in
 Cryptography labs.
 
-Modules: --------- - `assets`: Contains locales files (bable files + text that app
-uses) - `gui`: Manages the graphical user interface elements, including custom
-widgets and interactive components. - `logic`: Handles the core business logic and
-data processing required for the application. - `styles`: Defines styling
-configurations for the GUI elements, ensuring a consistent appearance.
-
-Example Usage:
---------------
-#TOOD
-
-Requirements:
---------------
-python  = '>=3.10, <3.14'
-customtkinter = "^5.2.2"
-ctktable = "^1.1"
-babel = "^2.16.0"
+Modules: ---------
+-`assets`:  Contains localisation files
+- `gui`:    Manages the graphical user interface elements, including custom widgets and
+            interactive components.
+- `logic`:  Handles the core business logic and
+            data processing required for the application.
+- `styles`: Defines styling configurations for the
+            GUI elements, ensuring a consistent appearance.
 
 License:
 --------------
@@ -43,5 +35,4 @@ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFT
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-__version__ = '0.1.0'
 __author__ = '<ange1o>'
