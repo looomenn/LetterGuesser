@@ -6,7 +6,7 @@ ensuring consistency and readability in the UI.
 """
 
 # general settings
-font: str = 'Segoe UI'
+font: str = 'Inter'
 text_large: int = 18
 text_medium: int = 16
 text_small: int = 14
