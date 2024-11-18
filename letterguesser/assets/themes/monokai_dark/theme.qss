@@ -1,0 +1,104 @@
+/* Monokai Dark Theme */
+
+QWidget {
+    background-color: #272822;
+    color: #F8F8F2;
+
+}
+
+/* Button Styling */
+QPushButton {
+    background-color: #49483E;
+    color: #F8F8F2;
+    border: 1px solid #75715E;
+    padding: 5px;
+    border-radius: 3px;
+
+}
+
+QPushButton:hover {
+    background-color: #75715E;
+}
+
+/* Input Fields */
+QLineEdit, QTextEdit, QPlainTextEdit {
+    background-color: #3E3D32;
+    color: #F8F8F2;
+    border: 1px solid #75715E;
+
+}
+
+/* Labels */
+QLabel {
+    color: #F8F8F2;
+
+}
+
+/* Menu Bar Styling */
+QMenuBar {
+    background-color: #272822;
+    color: #F8F8F2;
+
+}
+
+QMenuBar::item {
+    background-color: #272822;
+    color: #F8F8F2;
+    font-size: 10pt;
+
+}
+
+QMenuBar::item:selected {
+    background-color: #49483E;
+    color: #F8F8F2;
+    font-size: 10pt;
+
+}
+
+/* Menu Styling */
+QMenu {
+    background-color: #272822;
+    color: #F8F8F2;
+
+}
+
+QMenu::item {
+    background-color: #272822;
+    color: #F8F8F2;
+    font-size: 10pt;
+
+}
+
+QMenu::item:selected {
+    background-color: #49483E;
+    color: #F8F8F2;
+    font-size: 10pt;
+
+}
+
+/* Scroll Bars */
+QScrollBar:vertical, QScrollBar:horizontal {
+    background-color: #272822;
+    width: 15px;
+    height: 15px;
+}
+
+QScrollBar::handle {
+    background-color: #49483E;
+    border: 1px solid #75715E;
+}
+
+/* Combo Boxes */
+QComboBox {
+    background-color: #3E3D32;
+    color: #F8F8F2;
+    border: 1px solid #75715E;
+
+}
+
+QComboBox QAbstractItemView {
+    background-color: #3E3D32;
+    color: #F8F8F2;
+    selection-background-color: #49483E;
+
+}
