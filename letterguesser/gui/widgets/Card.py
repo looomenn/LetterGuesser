@@ -43,27 +43,29 @@ class Card(BaseFrame):
         self.var_type = var_type
 
         # layout
+        self.setMaximumHeight(150)
         self.layout.setContentsMargins(pad_3, pad_3, pad_3, pad_3)
-        self.layout.setSpacing(pad_2)
+        self.layout.setSpacing(pad_0)
 
         # value label
         self.value_label = QLabel(self)
         self.value_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.value_label.setFont(QFont(
-            font, text_medium, QFont.Weight.DemiBold
-        ))
-        self.update_value(initial_value)
+        self.value_label.setFont(QFont(font))
+        self.value_label.font().setWeight(600)
+        self.value_label.font().setBold(True)
+        self.value_label.font().setPixelSize(text_medium)
 
+        self.update_value(initial_value)
         self.add_widget(
             widget=self.value_label,
             alignment=Qt.AlignmentFlag.AlignLeft,
-            margin=(pad_3, pad_3, pad_3, pad_3)
         )
 
         # description label
         self.label = QLabel(self)
         self.label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.value_label.setFont(QFont(font, text_small))
+        self.label.setFont(QFont(font))
+        self.label.font().setPixelSize(text_small)
 
         # bind localisation
         self.localisation.bind(self.label, loc_label_key)
@@ -71,7 +73,6 @@ class Card(BaseFrame):
         self.add_widget(
             widget=self.label,
             alignment=Qt.AlignmentFlag.AlignLeft,
-            margin=(pad_3, pad_2, pad_3, pad_0)
         )
 
     def update_value(self, value: str | int):
