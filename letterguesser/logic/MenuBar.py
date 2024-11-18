@@ -7,6 +7,7 @@ from PyQt6.QtCore import QObject
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu, QMenuBar, QWidget
 
+from letterguesser.config import DEFAULT_LANGUAGE_CODE, DEFAULT_THEME, LANGUAGES
 from letterguesser.logic.utils import get_resource_path
 
 from .ExperimentManager import ExperimentManager
@@ -49,12 +50,16 @@ class MenuBar(QMenuBar):
 
         self.localisation.bind(self.languages_menu, 'languages')
 
+        self._apply_theme(self.preferences.get('theme', DEFAULT_THEME))
+        self.change_language(self.preferences.get('language', DEFAULT_LANGUAGE_CODE))
+
     def _populate_themes_menu(self) -> None:
         """Populate the themes."""
         themes_path = get_resource_path("assets/themes")
         try:
             themes_dir = Path(themes_path)
             theme_files = [file.stem for file in themes_dir.glob("*.qss")]
+
             for theme in theme_files:
                 action = QAction(theme, self)
                 action.triggered.connect(lambda checked, t=theme: self._apply_theme(t))
@@ -66,13 +71,17 @@ class MenuBar(QMenuBar):
 
     def _populate_languages_menu(self) -> None:
         """Populate the languages menu with predefined language options."""
-        english_action = QAction("English", self)
-        english_action.triggered.connect(lambda: self.change_language("en"))
-        self.languages_menu.addAction(english_action)
+        languages = {
+            "en": "English",
+            "uk": "Ukrainian"
+        }
 
-        ukrainian_action = QAction("Ukrainian", self)
-        ukrainian_action.triggered.connect(lambda: self.change_language("uk"))
-        self.languages_menu.addAction(ukrainian_action)
+        for code, name in languages.items():
+            action = QAction(name, self)
+            action.triggered.connect(
+                lambda checked, lang=code: self.change_language(lang)
+            )
+            self.languages_menu.addAction(action)
 
     def _apply_theme(self, theme: str) -> None:
         """
@@ -85,6 +94,13 @@ class MenuBar(QMenuBar):
             with open(theme_path, "r") as file:
                 theme_content = file.read()
                 self.parent().setStyleSheet(theme_content)
+                self.preferences["theme"] = theme
+                self._save_preferences()
+
+                for action in self.themes_menu.actions():
+                    action.setCheckable(True)
+                    action.setChecked(action.text() == theme)
+
         except FileNotFoundError:
             print(f"Theme file not found: {theme_path}")
         except Exception as e:
@@ -123,3 +139,7 @@ class MenuBar(QMenuBar):
         self.preferences['language'] = language
 
         self._save_preferences()
+
+        for action in self.languages_menu.actions():
+            action.setCheckable(True)
+            action.setChecked(action.text() == LANGUAGES.get(language))
