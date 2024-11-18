@@ -49,15 +49,11 @@ class CardGroup(BaseFrame):
                 var_type=config.get('var_type', 'str')
             )
 
-            margin = (pad_0, pad_4, pad_0, pad_0) if i < num_cards - 1 else\
-                (pad_0, pad_0, pad_0, pad_0)
-
             # adding the card to the layout
             self.add_widget(
                 card,
                 stretch=1,
                 alignment=Qt.AlignmentFlag.AlignLeft,
-                margin=margin
             )
 
             # storing the card instance in the dict
