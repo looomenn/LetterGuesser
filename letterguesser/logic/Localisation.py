@@ -16,7 +16,7 @@ from babel import Locale
 from letterguesser.config import (
     ALPHABET_EN,
     ALPHABET_UK,
-    APP_DEFAULT_LANGUAGE_CODE
+    DEFAULT_LANGUAGE_CODE
 )
 
 from .utils import get_resource_path
@@ -91,7 +91,7 @@ class Localisation:
         except Exception as e:
             print(f'[Localisation] Error loading language {lang_code}: {str(e)}')
             self.current_translation = gettext.NullTranslations()
-            self.current_locale = Locale(APP_DEFAULT_LANGUAGE_CODE)
+            self.current_locale = Locale(DEFAULT_LANGUAGE_CODE)
 
     def translate(self, key: str) -> str:
         """
