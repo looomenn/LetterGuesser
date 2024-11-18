@@ -9,7 +9,7 @@ import warnings
 
 import customtkinter as ctk
 
-from letterguesser.config import APP_DEFAULT_LANGUAGE, APP_TITLE
+from letterguesser.config import DEFAULT_LANGUAGE, APP_TITLE
 from letterguesser.styles.font import font, text_large, text_large_height
 from letterguesser.styles.padding import pad_0, pad_4
 
@@ -65,7 +65,7 @@ class HeaderFrame(BaseFrame):
             command=self.change_language
         )
 
-        self.language_selector.set(APP_DEFAULT_LANGUAGE)
+        self.language_selector.set(DEFAULT_LANGUAGE)
         self.add_widget(
             self.language_selector,
             side='left',
