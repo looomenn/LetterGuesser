@@ -9,7 +9,7 @@ consistent use across the application.
 """
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QLayout
 
 from letterguesser.context import localisation, logger, manager
 from letterguesser.styles.padding import pad_0, pad_4
@@ -29,6 +29,7 @@ class BaseFrame(QWidget):
             parent,
             title_key: str = None,
             transparent_bg: bool = False,
+            layout_type: type[QLayout] = QVBoxLayout,
             **kwargs
     ):
         """
@@ -49,7 +50,8 @@ class BaseFrame(QWidget):
         self.log = logger
 
         # layout
-        self.layout = QVBoxLayout(self)
+        self.layout = layout_type(self)
+        self.setLayout(self.layout)
         self.layout.setContentsMargins(pad_0, pad_0, pad_0, pad_0)
         self.layout.setSpacing(pad_4)
 
