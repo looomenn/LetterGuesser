@@ -4,15 +4,15 @@ Card widget for displaying a localized label with a dynamic value.
 Each card has a label and a value field, supporting localization and value updates.
 """
 
-import customtkinter as ctk
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QLabel, QWidget
 
 from letterguesser.gui.frames.BaseFrame import BaseFrame
 from letterguesser.styles.font import (
     font,
     text_medium,
-    text_medium_height,
     text_small,
-    text_small_height
 )
 from letterguesser.styles.padding import pad_0, pad_2, pad_3
 
@@ -22,10 +22,10 @@ class Card(BaseFrame):
 
     def __init__(
             self,
-            parent,
-            loc_label_key,
-            initial_value,
-            var_type='str',
+            parent: QWidget,
+            loc_label_key: str,
+            initial_value: str | int,
+            var_type: str = 'str',
             **kwargs
     ):
         """
@@ -42,56 +42,41 @@ class Card(BaseFrame):
         self.initial_value = initial_value
         self.var_type = var_type
 
-        self.configure(height=70)
-        self.propagate(False)
+        # layout
+        self.layout.setContentsMargins(pad_3, pad_3, pad_3, pad_3)
+        self.layout.setSpacing(pad_2)
 
-        # var typing shenanigans
-        self.var_value = ctk.StringVar(value=initial_value) \
-            if var_type == 'str' else ctk.IntVar(value=initial_value)
+        # value label
+        self.value_label = QLabel(self)
+        self.value_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.value_label.setFont(QFont(
+            font, text_medium, QFont.Weight.DemiBold
+        ))
+        self.update_value(initial_value)
 
-        self.value = ctk.CTkLabel(
-            self,
-            textvariable=self.var_value,
-            height=text_medium_height,
-            anchor='w',
-            font=ctk.CTkFont(
-                family=font,
-                size=text_medium,
-                weight='bold'  # sadly, there is no 'semibold' .______.
-            )
-        )
         self.add_widget(
-            self.value,
-            side='top',
-            expand=False,
-            padx=pad_3,
-            pady=(pad_3, pad_2)
+            widget=self.value_label,
+            alignment=Qt.AlignmentFlag.AlignLeft,
+            margin=(pad_3, pad_3, pad_3, pad_3)
         )
 
-        # card heading (text that describes what the value is)
-        self.label = ctk.CTkLabel(
-            self,
-            text='',
-            anchor='w',
-            height=text_small_height,
-            font=ctk.CTkFont(
-                family=font,
-                size=text_small
-            )
-        )
+        # description label
+        self.label = QLabel(self)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.value_label.setFont(QFont(font, text_small))
 
+        # bind localisation
         self.localisation.bind(self.label, loc_label_key)
+
         self.add_widget(
-            self.label,
-            side='top',
-            expand=False,
-            padx=pad_3,
-            pady=(pad_0, pad_3)
+            widget=self.label,
+            alignment=Qt.AlignmentFlag.AlignLeft,
+            margin=(pad_3, pad_2, pad_3, pad_0)
         )
 
     def update_value(self, value: str | int):
         """Update the displayed value on the card."""
-        self.var_value.set(value)
+        self.value_label.setText(str(value))
 
     def reset(self):
         """Reset the card value to the initial value."""
@@ -99,4 +84,4 @@ class Card(BaseFrame):
 
     def get_type(self):
         """Get type of the card."""
-        return str if isinstance(self.var_value, ctk.StringVar) else int
+        return str if self.var_type == "str" else int
