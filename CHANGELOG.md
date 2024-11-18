@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased] - 2024-11-18
+
+### Fixed
+- Localisation for `MenuBar`
+
+### Removed
+- Debug prints
+
 ## [2.0.0-alpha.1] - 2024-11-18
 
 ### Added
@@ -17,7 +25,7 @@
 ### Deprecated
 - `HeaderFrame` class
 
-### Deleted
+### Removed
 - `tox` integration 
 
 ## [2.0.0-alpha.0] - 2024-11-15
