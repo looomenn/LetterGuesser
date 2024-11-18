@@ -22,7 +22,9 @@ mypy = "^1.13.0"
 flake8 = "^7.1.1"
 pytest-cov = "^6.0.0"
 polib = "^1.2.0"
-tox = "^4.23.2"
+flake8-docstrings = "^1.7.0"
+flake8-import-order = "^0.18.2"
+flake8-bugbear = "^24.10.31"
 
 [tool.poetry.build]
 script = "build.py"
