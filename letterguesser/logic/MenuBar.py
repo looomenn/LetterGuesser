@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from string import Template
 
 from PyQt6.QtCore import QObject
 from PyQt6.QtGui import QAction
@@ -9,6 +10,7 @@ from PyQt6.QtWidgets import QMenu, QMenuBar, QWidget
 
 from letterguesser.config import DEFAULT_LANGUAGE_CODE, DEFAULT_THEME, LANGUAGES
 from letterguesser.logic.utils import get_resource_path
+from letterguesser.styles.font import fonts
 
 from .ExperimentManager import ExperimentManager
 from .Localisation import Localisation
@@ -55,15 +57,34 @@ class MenuBar(QMenuBar):
 
     def _populate_themes_menu(self) -> None:
         """Populate the themes."""
+        self.theme_mapping: dict = {}
         themes_path = get_resource_path("assets/themes")
         try:
             themes_dir = Path(themes_path)
-            theme_files = [file.stem for file in themes_dir.glob("*.qss")]
 
-            for theme in theme_files:
-                action = QAction(theme, self)
-                action.triggered.connect(lambda checked, t=theme: self._apply_theme(t))
-                self.themes_menu.addAction(action)
+            for theme_folder in themes_dir.iterdir():
+                if theme_folder.is_dir():
+                    info_file = theme_folder / "info.json"
+                    theme_file = theme_folder / "theme.qss"
+
+                    if not info_file.exists() or not theme_file.exists():
+                        continue
+
+                    with open(info_file, 'r') as f:
+                        theme_metadata = json.load(f)
+                        theme_name = theme_metadata.get('name', theme_folder.stem)
+                        theme_description = theme_metadata.get('description', '')
+
+                    self.theme_mapping[theme_folder.stem] = theme_name
+
+                    action = QAction(theme_name, self)
+                    action.setCheckable(True)
+                    action.triggered.connect(
+                        lambda checked, t=theme_folder.stem: self._apply_theme(t)
+                    )
+                    self.themes_menu.addAction(action)
+                    action.setToolTip(theme_description)
+
         except FileNotFoundError:
             print(f"Theme directory not found: {themes_path}")
         except Exception as e:
@@ -78,6 +99,7 @@ class MenuBar(QMenuBar):
 
         for code, name in languages.items():
             action = QAction(name, self)
+            action.setCheckable(True)
             action.triggered.connect(
                 lambda checked, lang=code: self.change_language(lang)
             )
@@ -89,17 +111,22 @@ class MenuBar(QMenuBar):
 
         :param theme: The name of the selected theme.
         """
-        theme_path = get_resource_path(f"assets/themes/{theme}.qss")
+        theme_path = get_resource_path(f"assets/themes/{theme}/theme.qss")
         try:
             with open(theme_path, "r") as file:
-                theme_content = file.read()
-                self.parent().setStyleSheet(theme_content)
-                self.preferences["theme"] = theme
-                self._save_preferences()
+                qss_template = Template(file.read())
 
-                for action in self.themes_menu.actions():
-                    action.setCheckable(True)
-                    action.setChecked(action.text() == theme)
+            qss_content = qss_template.safe_substitute(fonts)
+
+            self.parent().setStyleSheet(qss_content)
+
+            self.preferences["theme"] = theme
+            self._save_preferences()
+
+            for action in self.themes_menu.actions():
+                action.setChecked(
+                    self.theme_mapping.get(theme) == action.text()
+                )
 
         except FileNotFoundError:
             print(f"Theme file not found: {theme_path}")
@@ -141,5 +168,4 @@ class MenuBar(QMenuBar):
         self._save_preferences()
 
         for action in self.languages_menu.actions():
-            action.setCheckable(True)
             action.setChecked(action.text() == LANGUAGES.get(language))
