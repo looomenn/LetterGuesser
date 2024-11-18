@@ -9,7 +9,7 @@ consistent use across the application.
 """
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QLayout
+from PyQt6.QtWidgets import QLabel, QLayout, QVBoxLayout, QWidget
 
 from letterguesser.context import localisation, logger, manager
 from letterguesser.styles.padding import pad_0, pad_4
