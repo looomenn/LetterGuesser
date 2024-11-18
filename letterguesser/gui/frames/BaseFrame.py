@@ -8,13 +8,14 @@ experiment manager, and logger, which are passed through this frame for
 consistent use across the application.
 """
 
-import customtkinter as ctk
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
 
 from letterguesser.context import localisation, logger, manager
-from letterguesser.styles.padding import pad_4
+from letterguesser.styles.padding import pad_0, pad_4
 
 
-class BaseFrame(ctk.CTkFrame):
+class BaseFrame(QWidget):
     """
     Custom frame with title, transparency, and access to core app instances.
 
@@ -26,8 +27,8 @@ class BaseFrame(ctk.CTkFrame):
     def __init__(
             self,
             parent,
-            title_key=None,
-            transparent_bg=False,
+            title_key: str = None,
+            transparent_bg: bool = False,
             **kwargs
     ):
         """
@@ -40,48 +41,43 @@ class BaseFrame(ctk.CTkFrame):
         super().__init__(parent, **kwargs)
 
         if transparent_bg:
-            self.configure(fg_color='transparent')
+            self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
-        # connect to the global localisation instance
+        # core instances
         self.localisation = localisation
         self.manager = manager
         self.log = logger
 
+        # layout
+        self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(pad_0, pad_0, pad_0, pad_0)
+        self.layout.setSpacing(pad_4)
+
         self.title_label = None
         if title_key:
-            self.title_label = ctk.CTkLabel(self, text='')
+            self.title_label = QLabel(self)
             self.localisation.bind(self.title_label, title_key)
-            self.title_label.pack(side='top', anchor='w', padx=pad_4, pady=pad_4)
+            self.title_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+            self.layout.addWidget(self.title_label)
 
     def add_widget(
             self,
-            widget,
-            side: str = 'top',
-            fill: str | None = 'both',
-            expand: bool = True,
-            anchor: str = 'w',
-            padx: int | tuple[int, int] = 0,
-            pady: int | tuple[int, int] = 0
+            widget: QWidget,
+            stretch: int = 0,
+            alignment: Qt.AlignmentFlag | None = None,
+            margin: tuple[int, int, int, int] = None
     ) -> None:
         """
         Add a widget to the frame with specified packing options.
 
         :param widget: Widget to add to the frame.
-        :param side: Packing side.
-        :param fill: Fill direction.
-        :param expand: Allow expansion.
-        :param anchor: Anchor alignment.
-        :param padx: Horizontal padding.
-        :param pady: Vertical padding.
+        :param stretch: Stretch factor for the widget.
+        :param alignment: Alignment for the widget (Qt alignment flags).
+        :param margin: Optional margins to apply (left, top, right, bottom).
         """
-        widget.pack(
-            side=side,
-            fill=fill,
-            expand=expand,
-            anchor=anchor,
-            padx=padx,
-            pady=pady
-        )
+        if margin:
+            widget.setContentsMargins(*margin)
+        self.layout.addWidget(widget, stretch=stretch, alignment=alignment)
 
 
 __all__ = ['BaseFrame', 'localisation']
