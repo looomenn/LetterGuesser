@@ -19,6 +19,8 @@ import sys
 from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 
+from letterguesser.gui.frames.LeftFrame import LeftFrame
+
 from letterguesser.config import APP_SIZE, APP_TITLE
 from letterguesser.context import localisation, manager
 from letterguesser.logic.MenuBar import MenuBar
@@ -48,6 +50,9 @@ class App(QMainWindow):
 
         self.menu_bar = MenuBar(self, self.localisation, self.manager)
         self.setMenuBar(self.menu_bar)
+
+        self.left_frame = LeftFrame(self)
+        self.main_layout.addWidget(self.left_frame)
 
         self.init_shortcuts()
 
