@@ -4,6 +4,8 @@ LeftFrame to display card group and user input.
 This frame holds status cards, input fields, and status displays.
 """
 
+from PyQt6.QtCore import Qt
+
 from letterguesser.gui.widgets.CardGoup import CardGroup
 from letterguesser.styles.padding import pad_0, pad_2
 
@@ -42,27 +44,20 @@ class LeftFrame(BaseFrame):
 
         self.add_widget(
             self.card_group,
-            side='top',
-            expand=False,
-            pady=(pad_0, pad_2)
+            alignment=Qt.AlignmentFlag.AlignLeft
         )
 
-        self.input_frame = InputFrame(self)
-        self.add_widget(
-            self.input_frame,
-            side='top',
-            expand=False,
-            pady=pad_2
-        )
-
-        self.status_frame = StatusFrame(self)
-        self.add_widget(
-            self.status_frame,
-            side='top',
-            fill='both',
-            expand=True,
-            pady=(pad_2, pad_0)
-        )
+        # self.input_frame = InputFrame(self)
+        # self.add_widget(
+        #     self.input_frame,
+        #     alignment=Qt.AlignmentFlag.AlignLeft
+        # )
+        #
+        # self.status_frame = StatusFrame(self)
+        # self.add_widget(
+        #     self.status_frame,
+        #     alignment=Qt.AlignmentFlag.AlignLeft
+        # )
 
         self.manager.card_events['update'].subscribe(self.card_update_value)
         self.manager.card_events['reset_all'].subscribe(self.card_reset_all)
