@@ -19,10 +19,9 @@ import sys
 from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 
-from letterguesser.gui.frames.LeftFrame import LeftFrame
-
 from letterguesser.config import APP_SIZE, APP_TITLE
 from letterguesser.context import localisation, manager
+from letterguesser.gui.frames.LeftFrame import LeftFrame
 from letterguesser.logic.MenuBar import MenuBar
 from letterguesser.styles.padding import pad_6
 
