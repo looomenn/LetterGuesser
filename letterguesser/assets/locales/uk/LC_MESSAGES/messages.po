@@ -66,3 +66,9 @@ msgstr "Вгадані символи"
 
 msgid "char"
 msgstr "Символ"
+
+msgid "languages"
+msgstr "Мова"
+
+msgid "themes"
+msgstr "Оформлення"

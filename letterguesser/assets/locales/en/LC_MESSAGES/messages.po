@@ -66,3 +66,9 @@ msgstr "Guessed chars"
 
 msgid "char"
 msgstr "Char"
+
+msgid "languages"
+msgstr "Language"
+
+msgid "themes"
+msgstr "Themes"
