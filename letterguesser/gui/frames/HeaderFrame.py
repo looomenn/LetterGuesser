@@ -5,6 +5,8 @@ Extends BaseFrame with title display and language toggle, enabling
 dynamic language changes.
 """
 
+import warnings
+
 import customtkinter as ctk
 
 from letterguesser.config import APP_DEFAULT_LANGUAGE, APP_TITLE
@@ -29,6 +31,13 @@ class HeaderFrame(BaseFrame):
         :param parent: Parent tkinter object for the frame.
         """
         super().__init__(parent, **kwargs)
+        warnings.warn(
+            f"{self.__class__.__name__} is "
+            f"deprecated and will be removed in a future version. "
+            "Please use MenuBar instead.",
+            DeprecationWarning,
+            stacklevel=2
+        )
 
         # app title
         self.app_name_label = ctk.CTkLabel(
