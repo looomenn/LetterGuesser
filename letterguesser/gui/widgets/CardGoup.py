@@ -4,6 +4,9 @@ CardGroup widget to manage a group of Card instances.
 This class allows the creation and management of multiple `Card` widgets.
 """
 
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QHBoxLayout
+
 from letterguesser.gui.frames.BaseFrame import BaseFrame
 from letterguesser.styles.padding import pad_0, pad_4
 
@@ -28,7 +31,12 @@ class CardGroup(BaseFrame):
         :param configs: Config for each card with label_key, initial_value, var_type.
         :param kwargs: Additional keyword arguments.
         """
-        super().__init__(parent, transparent_bg=True, **kwargs)
+        super().__init__(
+            parent,
+            transparent_bg=True,
+            layout_type=QHBoxLayout,
+            **kwargs
+        )
 
         self.cards: dict[str, Card] = {}
 
@@ -41,13 +49,15 @@ class CardGroup(BaseFrame):
                 var_type=config.get('var_type', 'str')
             )
 
+            margin = (pad_0, pad_4, pad_0, pad_0) if i < num_cards - 1 else\
+                (pad_0, pad_0, pad_0, pad_0)
+
             # adding the card to the layout
             self.add_widget(
                 card,
-                side='left',
-                fill='x',
-                expand=True,
-                padx=(pad_0, pad_4) if i < num_cards - 1 else pad_0
+                stretch=1,
+                alignment=Qt.AlignmentFlag.AlignLeft,
+                margin=margin
             )
 
             # storing the card instance in the dict
