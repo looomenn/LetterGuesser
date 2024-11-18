@@ -43,7 +43,7 @@ class MenuBar(QMenuBar):
         self.addMenu(self.languages_menu)
         self._populate_languages_menu()
 
-        self.localisation.bind(self.themes_menu, 'languages')
+        self.localisation.bind(self.languages_menu, 'languages')
 
     def _populate_themes_menu(self) -> None:
         """Populate the themes."""
@@ -92,7 +92,6 @@ class MenuBar(QMenuBar):
 
         :param language: 'English' or 'Ukrainian'.
         """
-        print('triggered')
         self.localisation.load_language(language)
 
         self.manager.reset_experiment()
