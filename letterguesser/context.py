@@ -34,13 +34,13 @@ consistent use across the application:
 """
 import logging.config
 
-from letterguesser.config import APP_DEFAULT_LANGUAGE_CODE
+from letterguesser.config import DEFAULT_LANGUAGE_CODE
 from letterguesser.logic.ExperimentManager import ExperimentManager
 from letterguesser.logic.Localisation import Localisation
 
 # Global instance of the Localisation
 localisation: Localisation = Localisation(
-    default_lang=APP_DEFAULT_LANGUAGE_CODE,
+    default_lang=DEFAULT_LANGUAGE_CODE,
     locale_dir='assets/locales'
 )
 
