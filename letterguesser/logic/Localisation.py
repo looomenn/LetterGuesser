@@ -6,7 +6,10 @@ Provides language translation and binds text updates to localized widgets.
 
 import gettext
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Optional
+
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QMenu, QWidget
 
 from babel import Locale
 
@@ -63,8 +66,8 @@ class Localisation:
         self.locale_dir: Path = get_resource_path(locale_dir)
 
         self.widgets: list[Any] = []
-        self.current_locale = None
-        self.current_translation: None | gettext.NullTranslations = None
+        self.current_locale: Optional[Locale] = None
+        self.current_translation: Optional[gettext.NullTranslations] = None
 
         self.load_language(self.default_lang)
 
@@ -103,9 +106,9 @@ class Localisation:
 
     def bind(
             self,
-            widget,
-            translation_key,
-            update_method=None
+            widget: QWidget | QAction | QMenu,
+            translation_key: str,
+            update_method: Optional[Callable[[str], None]] = None
     ) -> None:
         """
         Bind a widget to a translation key for automatic updates.
@@ -116,12 +119,22 @@ class Localisation:
         :return: None
         """
 
-        def update_widget():
+        def update_widget() -> None:
             translated_text = self.translate(translation_key)
             if update_method:
                 update_method(translated_text)
             else:
-                widget.configure(text=translated_text)
+                if isinstance(widget, QAction):
+                    widget.setText(translated_text)
+                elif isinstance(widget, QMenu):
+                    widget.setTitle(translated_text)
+                elif hasattr(widget, 'setText'):
+                    widget.setText(translated_text)
+                else:
+                    raise TypeError(
+                        f'Widget of type {type(widget).__name__} does not support '
+                        f'updating.'
+                    )
 
         widget._update_method = update_widget
         self.widgets.append(widget)
