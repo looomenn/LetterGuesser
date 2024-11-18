@@ -1,10 +1,24 @@
 # Changelog
 
-## [Unreleased] - 2024-11-15
+## [2.0.0-alpha.1] - 2024-11-18
 
-## Changed
-- Start migration to PyQt6
+### Added
+- Localisation keys for the `MenuBar`
+- `flake8` additional modules for tests (see dev deps)
+- `MenuBar` class
+
+### Changed
+- `Localisation` migration to PyQt6
 - Entry point base from `customtkinter` to `QApplication`
+
+### Fixed
+- App window `center` method
+
+### Deprecated
+- `HeaderFrame` class
+
+### Deleted
+- `tox` integration 
 
 ## [2.0.0-alpha.0] - 2024-11-15
 
