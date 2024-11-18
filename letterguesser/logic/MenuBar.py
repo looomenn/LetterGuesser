@@ -1,5 +1,6 @@
 """MenuBar Class."""
 
+import json
 from pathlib import Path
 
 from PyQt6.QtCore import QObject
@@ -14,6 +15,8 @@ from .Localisation import Localisation
 
 class MenuBar(QMenuBar):
     """Menu Bar."""
+
+    CONFIG_FILE = get_resource_path("settings.json")
 
     def __init__(
             self,
@@ -30,6 +33,7 @@ class MenuBar(QMenuBar):
 
         self.manager = manager
         self.localisation = localisation
+        self.preferences = self._load_preferences()
 
         # themes menu
         self.themes_menu = QMenu("Themes", self)
@@ -86,6 +90,26 @@ class MenuBar(QMenuBar):
         except Exception as e:
             print(f"Error applying theme: {e}")
 
+    def _load_preferences(self) -> dict:
+        """
+        Load user preferences from the configuration file.
+
+        :return: Dictionary of user preferences.
+        """
+        try:
+            with open(self.CONFIG_FILE, "r") as file:
+                return json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}
+
+    def _save_preferences(self) -> None:
+        """Save user preferences to the configuration file."""
+        try:
+            with open(self.CONFIG_FILE, "w") as file:
+                json.dump(self.preferences, file, indent=4)
+        except Exception as e:
+            print(f"Error saving preferences: {e}")
+
     def change_language(self, language: str):
         """
         Change the application language based on selection.
@@ -95,3 +119,7 @@ class MenuBar(QMenuBar):
         self.localisation.load_language(language)
 
         self.manager.reset_experiment()
+
+        self.preferences['language'] = language
+
+        self._save_preferences()
