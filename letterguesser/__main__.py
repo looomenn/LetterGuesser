@@ -16,13 +16,13 @@ No options supported
 """
 import sys
 
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout
 from PyQt6.QtGui import QKeySequence, QShortcut
+from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 
 from letterguesser.config import APP_SIZE, APP_TITLE
 from letterguesser.context import localisation, manager
-# from letterguesser.gui.frames import HeaderFrame, MainFrame
-from letterguesser.styles.padding import pad_0, pad_6
+from letterguesser.logic.MenuBar import MenuBar
+from letterguesser.styles.padding import pad_6
 
 
 class App(QMainWindow):
@@ -46,11 +46,8 @@ class App(QMainWindow):
         self.main_layout.setContentsMargins(pad_6, pad_6, pad_6, pad_6)
         self.main_layout.setSpacing(pad_6)
 
-        #self.header_frame = HeaderFrame(self)
-        #self.main_frame = MainFrame(self)
-
-        #self.main_layout.addWidget(self.header_frame)
-        #self.main_layout.addWidget(self.main_frame)
+        self.menu_bar = MenuBar(self, self.localisation, self.manager)
+        self.setMenuBar(self.menu_bar)
 
         self.init_shortcuts()
 
@@ -65,9 +62,6 @@ class App(QMainWindow):
         """Initialize key bindings."""
         escape_shortcut = QShortcut(QKeySequence('Escape'), self)
         escape_shortcut.activated.connect(self.close)  # ignore IDE highlight
-
-        #ctrl_l_shortcut = QShortcut(QKeySequence('Ctrl+L'), self)
-        #ctrl_l_shortcut.activated.connect(self.header_frame.toggle_language)
 
 
 if __name__ == "__main__":
