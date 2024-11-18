@@ -2,6 +2,8 @@ name: Pytests
 
 on:
   push:
+    branches-ignore:
+      - 'rewrite/**'
     paths: 'letterguesser/**'
 
   pull_request:
