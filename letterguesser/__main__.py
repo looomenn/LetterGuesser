@@ -16,7 +16,7 @@ No options supported
 """
 import sys
 
-from PyQt6.QtGui import QKeySequence, QShortcut, QFont, QFontDatabase
+from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 
 from letterguesser.config import APP_SIZE, APP_TITLE
@@ -56,13 +56,6 @@ class App(QMainWindow):
         self.main_layout.addWidget(self.left_frame)
 
         self.init_shortcuts()
-        self._load_font()
-
-    def _load_font(self):
-        """Load app font."""
-        font_dir = get_resource_path("fonts")
-        for font in font_dir.glob("*.ttf"):
-            QFontDatabase.addApplicationFont(str(font))
 
     def center(self) -> None:
         """Center the window on the screen."""
