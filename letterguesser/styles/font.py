@@ -6,18 +6,21 @@ ensuring consistency and readability in the UI.
 """
 
 font_base: int = 16
-
 fonts: dict = {
-    'fontStack-system': "'Segoe UI', 'Noto Sans', 'Helvetica', 'Arial', 'sans-serif'",
-    'text-title-weight-large': 600,
-    'text-title-weight-medium': 600,
-    'text-title-weight-small': 600,
-    'text-title-size-large': f'{font_base * 2}px',
-    'text-title-size-medium': f'{font_base * 2}px',
-    'text-title-size-small': f'{font_base * 1}px',
-    'text-body-size-large': f"{font_base * 1}px",
-    'text-body-size-medium': f"{font_base * 0.875}px",
-    'text-body-size-small': f"{font_base * 0.75}px"
+    'fontStack_system': "'SF Pro Text', "
+                        "'Segoe UI', "
+                        "'Noto Sans', "
+                        "'Helvetica', "
+                        "'Arial', 'sans-serif'",
+    'text_title_weight_large': 600,
+    'text_title_weight_medium': 600,
+    'text_title_weight_small': 600,
+    'text_title_size_large': f'{font_base * 2}px',
+    'text_title_size_medium': f'{font_base * 2}px',
+    'text_title_size_small': f'{font_base * 1}px',
+    'text_body_size_large': f"{font_base * 1}px",
+    'text_body_size_medium': f"{font_base * 0.875}px",
+    'text_body_size_small': f"{font_base * 0.75}px"
 }
 
 # general settings
