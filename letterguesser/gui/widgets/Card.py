@@ -50,10 +50,6 @@ class Card(BaseFrame):
         # value label
         self.value_label = QLabel(self)
         self.value_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.value_label.setFont(QFont(font))
-        self.value_label.font().setWeight(600)
-        self.value_label.font().setBold(True)
-        self.value_label.font().setPixelSize(text_medium)
 
         self.update_value(initial_value)
         self.add_widget(
@@ -64,8 +60,6 @@ class Card(BaseFrame):
         # description label
         self.label = QLabel(self)
         self.label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.label.setFont(QFont(font))
-        self.label.font().setPixelSize(text_small)
 
         # bind localisation
         self.localisation.bind(self.label, loc_label_key)
