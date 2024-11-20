@@ -6,7 +6,7 @@ settings, supported languages, and alphabets.
 """
 APP_TITLE: str = 'LetterGuesser'
 APP_SIZE: tuple[int, int] = (1300, 740)
-DEFAULT_THEME: str = 'default'
+DEFAULT_THEME: str = 'jetbrains_dark'
 
 DEFAULT_LANGUAGE: str = 'Ukrainian'  # Ukrainian / English
 DEFAULT_LANGUAGE_CODE: str = 'uk'  # uk / en
