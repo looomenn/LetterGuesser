@@ -3,7 +3,7 @@
 QWidget {
     background-color: #1E1E2E;
     color: #D9E0EE;
-    font-family: ${font}
+    font-family: ${fontStack_system};
 }
 
 /* Button Styling */

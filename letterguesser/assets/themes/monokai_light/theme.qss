@@ -3,6 +3,7 @@
 QWidget {
     background-color: #F8F8F2;
     color: #272822;
+    font-family: ${fontStack_system};
 }
 
 QPushButton {
