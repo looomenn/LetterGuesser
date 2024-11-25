@@ -17,7 +17,7 @@ No options supported
 import sys
 
 from PyQt6.QtGui import QKeySequence, QShortcut
-from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QWidget
 
 from letterguesser.config import APP_SIZE, APP_TITLE
 from letterguesser.context import localisation, manager
@@ -45,7 +45,8 @@ class App(QMainWindow):
 
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
-        self.main_layout = QVBoxLayout(central_widget)
+
+        self.main_layout = QHBoxLayout(central_widget)
         self.main_layout.setContentsMargins(pad_6, pad_6, pad_6, pad_6)
         self.main_layout.setSpacing(pad_6)
 
