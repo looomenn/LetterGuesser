@@ -5,16 +5,16 @@ This frame holds status cards, input fields, and status displays.
 """
 
 from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
 from letterguesser.gui.widgets.CardGoup import CardGroup
-from letterguesser.styles.padding import pad_0, pad_2
 
-from .BaseFrame import BaseFrame
-from .InputFrame import InputFrame
-from .StatusFrame import StatusFrame
+from letterguesser.context import localisation, manager, logger
+
+from letterguesser.gui.frames.InputFrame import InputFrame
 
 
-class LeftFrame(BaseFrame):
+class LeftFrame(QFrame):
     """
     Frame containing a card group, input frame, and status frame.
 
@@ -28,7 +28,15 @@ class LeftFrame(BaseFrame):
         :param parent: The parent tkinter object.
         :param kwargs: Additional keyword arguments for frame configuration.
         """
-        super().__init__(parent, transparent_bg=True, **kwargs)
+        super().__init__(parent, **kwargs)
+
+        self.localisation = localisation
+        self.manager = manager
+        self.log = logger
+
+        # layout
+        self.layout = QVBoxLayout(self)
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         card_configs = [
             {"label_key": "experiment_number", 'initial_value': 0, 'var_type': 'int'},
@@ -42,17 +50,12 @@ class LeftFrame(BaseFrame):
             configs=card_configs
         )
 
-        self.add_widget(
-            self.card_group,
-            alignment=Qt.AlignmentFlag.AlignLeft
-        )
+        self.layout.addWidget(self.card_group)
 
-        # self.input_frame = InputFrame(self)
-        # self.add_widget(
-        #     self.input_frame,
-        #     alignment=Qt.AlignmentFlag.AlignLeft
-        # )
-        #
+
+        self.input_frame = InputFrame()
+        self.layout.addWidget(self.input_frame)
+
         # self.status_frame = StatusFrame(self)
         # self.add_widget(
         #     self.status_frame,
