@@ -73,7 +73,6 @@ class MenuBar(QMenuBar):
                     with open(info_file, 'r') as f:
                         theme_metadata = json.load(f)
                         theme_name = theme_metadata.get('name', theme_folder.stem)
-                        theme_description = theme_metadata.get('description', '')
 
                     self.theme_mapping[theme_folder.stem] = theme_name
 
@@ -83,7 +82,6 @@ class MenuBar(QMenuBar):
                         lambda checked, t=theme_folder.stem: self._apply_theme(t)
                     )
                     self.themes_menu.addAction(action)
-                    action.setToolTip(theme_description)
 
         except FileNotFoundError:
             print(f"Theme directory not found: {themes_path}")
