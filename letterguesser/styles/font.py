@@ -19,6 +19,7 @@ fonts: dict = {
     'text_title_size_medium': f'{font_base * 2}px',
     'text_title_size_small': f'{font_base * 1}px',
     'text_body_size_large': f"{font_base * 1}px",
+    'text_body_lineHeight_large': "1.5",
     'text_body_size_medium': f"{font_base * 0.875}px",
     'text_body_size_small': f"{font_base * 0.75}px"
 }
