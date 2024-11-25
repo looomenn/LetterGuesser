@@ -53,7 +53,7 @@ class BaseFrame(QWidget):
         self.layout = layout_type(self)
         self.setLayout(self.layout)
         self.layout.setContentsMargins(pad_0, pad_0, pad_0, pad_0)
-        self.layout.setSpacing(pad_4)
+        self.layout.setSpacing(pad_0)
 
         self.title_label = None
         if title_key:
@@ -66,8 +66,7 @@ class BaseFrame(QWidget):
             self,
             widget: QWidget,
             stretch: int = 0,
-            alignment: Qt.AlignmentFlag | None = None,
-            margin: tuple[int, int, int, int] = None
+            alignment: Qt.AlignmentFlag | None = None
     ) -> None:
         """
         Add a widget to the frame with specified packing options.
@@ -75,11 +74,12 @@ class BaseFrame(QWidget):
         :param widget: Widget to add to the frame.
         :param stretch: Stretch factor for the widget.
         :param alignment: Alignment for the widget (Qt alignment flags).
-        :param margin: Optional margins to apply (left, top, right, bottom).
         """
-        if margin:
-            widget.setContentsMargins(*margin)
-        self.layout.addWidget(widget, stretch=stretch, alignment=alignment)
+        self.layout.addWidget(
+            widget,
+            stretch=stretch,
+            alignment=alignment
+        )
 
 
 __all__ = ['BaseFrame', 'localisation']
