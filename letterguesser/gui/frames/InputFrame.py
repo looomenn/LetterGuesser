@@ -5,62 +5,62 @@ Provides an input block, action buttons, and text displays.
 """
 from typing import Any, Callable
 
+from PyQt6.QtWidgets import QFrame, QVBoxLayout
+
 from letterguesser.gui.widgets import ButtonGroup, InputBlock, TextBlockSegment
 from letterguesser.styles.padding import pad_3, pad_4, pad_5
 
-from .BaseFrame import BaseFrame
+from letterguesser.context import localisation, manager
 
 
-class InputFrame(BaseFrame):
+class InputFrame(QFrame):
     """Frame with input fields and controls for managing user input."""
 
-    def __init__(self, parent, **kwargs):
+    def __init__(self, **kwargs):
         """
         Initialize InputFrame with input fields and action buttons.
 
         :param parent: Parent tkinter object for the frame.
         """
-        super().__init__(parent, **kwargs)
+        super().__init__(**kwargs)
+
+        self.setObjectName('Container')
+
+        self.manager = manager
+        self.localisation = localisation
+
+        # layout
+        self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(0)
 
         self.random_text = TextBlockSegment(
             self,
             localisation_key='random_text_part',
             initial_text='-'
         )
-        self.add_widget(
-            self.random_text,
-            side='top',
-            expand=False,
-            padx=pad_5,
-            pady=(pad_5, pad_3)
-        )
+        self.layout.addWidget(self.random_text)
 
         self.used_chars = TextBlockSegment(
             self,
             localisation_key='used_chars',
             initial_text='-'
         )
-        self.add_widget(
-            self.used_chars,
-            side='top',
-            expand=False,
-            padx=pad_5,
-            pady=(pad_3, pad_4)
-        )
+        self.layout.addWidget(self.used_chars)
 
-        self.input = InputBlock(
-            self,
-            loc_label_key='main_input_label',
-            loc_placeholder_key='main_input_placeholder',
-            is_disabled=True
-        )
-        self.add_widget(
-            self.input,
-            side='top',
-            expand=False,
-            padx=pad_5,
-            pady=pad_4
-        )
+        # self.input = InputBlock(
+        #     self,
+        #     loc_label_key='main_input_label',
+        #     loc_placeholder_key='main_input_placeholder',
+        #     is_disabled=True
+        # )
+        # self.add_widget(
+        #     self.input,
+        #     side='top',
+        #     expand=False,
+        #     padx=pad_5,
+        #     pady=pad_4
+        # )
 
         buttons_configs = [
             {
@@ -85,14 +85,14 @@ class InputFrame(BaseFrame):
             }
         ]
 
-        self.actions = ButtonGroup(self, buttons_configs)
-        self.add_widget(
-            self.actions,
-            side='top',
-            expand=False,
-            pady=(pad_4, pad_5),
-            padx=pad_5
-        )
+        # self.actions = ButtonGroup(self, buttons_configs)
+        # self.add_widget(
+        #     self.actions,
+        #     side='top',
+        #     expand=False,
+        #     pady=(pad_4, pad_5),
+        #     padx=pad_5
+        # )
 
         self.local_blocks = {
             'random_text': self.random_text,
