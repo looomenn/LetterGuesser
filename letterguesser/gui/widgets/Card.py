@@ -5,19 +5,13 @@ Each card has a label and a value field, supporting localization and value updat
 """
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QLabel, QWidget
+from PyQt6.QtWidgets import QLabel, QWidget, QGridLayout, QFrame
 
-from letterguesser.gui.frames.BaseFrame import BaseFrame
-from letterguesser.styles.font import (
-    font,
-    text_medium,
-    text_small,
-)
-from letterguesser.styles.padding import pad_0, pad_2, pad_3
+from letterguesser.context import localisation, manager
+from letterguesser.styles.padding import pad_0, pad_2
 
 
-class Card(BaseFrame):
+class Card(QFrame):
     """Displays a label and a dynamic value."""
 
     def __init__(
@@ -39,35 +33,34 @@ class Card(BaseFrame):
         """
         super().__init__(parent, **kwargs)
 
+        self.setObjectName('Card')
+
+        self.localisation = localisation
+        self.manager = manager
+
         self.initial_value = initial_value
         self.var_type = var_type
 
         # layout
-        self.setMaximumHeight(150)
-        self.layout.setContentsMargins(pad_3, pad_3, pad_3, pad_3)
+        self.layout = QGridLayout(self)
+        self.layout.setContentsMargins(pad_0, pad_0, pad_0, pad_0)
         self.layout.setSpacing(pad_0)
 
         # value label
-        self.value_label = QLabel(self)
-        self.value_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-
+        self.value_label = QLabel()
+        self.value_label.setObjectName('CardValueLabel')
+        self.value_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.update_value(initial_value)
-        self.add_widget(
-            widget=self.value_label,
-            alignment=Qt.AlignmentFlag.AlignLeft,
-        )
 
         # description label
-        self.label = QLabel(self)
-        self.label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.label = QLabel()
+        self.label.setObjectName('CardLabel')
+        self.label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
 
-        # bind localisation
         self.localisation.bind(self.label, loc_label_key)
 
-        self.add_widget(
-            widget=self.label,
-            alignment=Qt.AlignmentFlag.AlignLeft,
-        )
+        self.layout.addWidget(self.value_label)
+        self.layout.addWidget(self.label)
 
     def update_value(self, value: str | int):
         """Update the displayed value on the card."""
