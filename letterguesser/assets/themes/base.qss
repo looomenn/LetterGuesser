@@ -1,0 +1,86 @@
+QWidget {
+    font-family: ${fontStack_system};
+    color: ${fgColor_default};
+    background-color: ${bgColor_default};
+}
+
+QMenuBar {
+    font-size: ${text_body_size_medium};
+    background-color: ${bgColor_inset};
+    color: ${fgColor_default};
+    padding: 12px;
+    border-bottom: 1px solid ${borderColor_default};
+}
+
+QMenuBar::item:selected {
+    font-size: inherit;
+    background-color: ${control_transparent_bgColor_hover};
+    color: ${fgColor_default};
+}
+
+
+QMenu{
+    background-color: ${bgColor_default};
+    border-radius: ${borderRadius_large};
+    border: ${borderWidth_thin} solid ${borderColor_default};
+    padding: 10px;
+    margin: 0;
+}
+
+QMenuBar::item {
+    padding: 10px;
+    border-radius: ${borderRadius_medium};
+}
+
+QMenu::item:selected{
+    background: ${control_transparent_bgColor_hover};
+}
+
+
+#Container,
+#Card {
+    background-color: ${bgColor_default};
+    border-color: ${borderColor_default};
+    border-radius: ${borderRadius_medium};
+    border-style: solid;
+    border-width: ${borderWidth_thin};
+}
+
+#Container {
+    padding: 24px;
+}
+
+#Card{
+    padding: 12px;
+}
+
+#Card > #card-value {
+    font-size: ${text_body_size_medium};
+    font-weight: ${base_text_weight_medium};
+}
+
+#Card > #card-label {
+    color: ${fgColor_muted};
+}
+
+QLineEdit {
+    padding: 5px 12px;
+    font-size: ${text_body_size_medium};
+    color: ${fgColor_default};
+    border: ${borderWidth_thin} solid ${control_borderColor_rest};
+    border-radius: ${borderRadius_medium};
+    font-weight: ${base_text_weight_medium};
+    max-width: 440px;
+}
+
+QLineEdit:disabled{
+    background-color: ${control_bgColor_disabled};
+    border: ${borderWidth_thin} solid ${control_borderColor_disabled};
+    color: ${fgColor_disabled};
+}
+
+#form-group > QLabel {
+    margin-bottom: 6px;
+    font-weight: ${base_text_weight_semibold};
+    font-size: ${text_body_size_medium}
+}
