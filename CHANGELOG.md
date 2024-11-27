@@ -1,9 +1,26 @@
 # Changelog
 
-## [Unreleased] - 2024-11-18
+## [2.0.0-alpha.2] - 2024-11-27
+
+### Added
+- Light theme
+- Dark theme
+- SCSS compilation
+- Primitives file for the basic style variables 
+- User settings (for theme and langauge)
+
+### Changed
+- Migrate `InputBlock` to PyQt6
+- Migrate `Card` to PyQt6
+- Migrate `CardGoup` to PyQt6
 
 ### Fixed
 - Localisation for `MenuBar`
+
+### Deprecated
+- `TextBlockSegment` widget (use `InputBlock` instead)
+- Style variables (in styles sub-package)
+- `BaseFrame` (use `QFrame` instead)
 
 ### Removed
 - Debug prints
