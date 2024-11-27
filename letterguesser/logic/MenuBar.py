@@ -9,7 +9,7 @@ from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu, QMenuBar, QWidget
 
 from letterguesser.config import DEFAULT_LANGUAGE_CODE, DEFAULT_THEME, LANGUAGES
-from letterguesser.logic.utils import get_resource_path
+from letterguesser.logic.utils import get_resource_path, compile_scss
 from letterguesser.styles.font import fonts
 
 from .ExperimentManager import ExperimentManager
@@ -109,12 +109,15 @@ class MenuBar(QMenuBar):
 
         :param theme: The name of the selected theme.
         """
-        theme_path = get_resource_path(f"assets/themes/{theme}/theme.qss")
+        themes_path = get_resource_path('assets/themes')
+        theme_folder = themes_path / theme
         try:
-            with open(theme_path, "r") as file:
-                qss_template = Template(file.read())
+            theme_variables = compile_scss(theme_folder)
+            base_qss_path = themes_path / 'base.qss'
+            with open(base_qss_path, 'r') as base_file:
+                base_template = Template(base_file.read())
 
-            qss_content = qss_template.safe_substitute(fonts)
+            qss_content = base_template.safe_substitute(theme_variables)
 
             self.parent().setStyleSheet(qss_content)
 
@@ -126,10 +129,10 @@ class MenuBar(QMenuBar):
                     self.theme_mapping.get(theme) == action.text()
                 )
 
-        except FileNotFoundError:
-            print(f"Theme file not found: {theme_path}")
+        except FileNotFoundError as e:
+            print(f"Theme file (scss) not found in: {theme_folder}")
         except Exception as e:
-            print(f"Error applying theme: {e}")
+            print(f"Error applying '{theme}': {e}")
 
     def _load_preferences(self) -> dict:
         """
