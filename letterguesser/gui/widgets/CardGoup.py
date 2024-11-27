@@ -33,6 +33,8 @@ class CardGroup(QWidget):
         self.layout = QHBoxLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
+        self.layout.setSpacing(16)
+
         self.cards: dict[str, Card] = {}
 
         for i in range(num_cards):
