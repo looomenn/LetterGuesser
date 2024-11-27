@@ -21,14 +21,14 @@ class LeftFrame(QFrame):
     Used to display cards with experiment details, user input, and status updates.
     """
 
-    def __init__(self, parent, **kwargs):
+    def __init__(self, **kwargs):
         """
         Initialize LeftFrame with card and input frames.
 
         :param parent: The parent tkinter object.
         :param kwargs: Additional keyword arguments for frame configuration.
         """
-        super().__init__(parent, **kwargs)
+        super().__init__(**kwargs)
 
         self.localisation = localisation
         self.manager = manager
@@ -44,14 +44,8 @@ class LeftFrame(QFrame):
             {"label_key": "last_char", 'initial_value': '-', 'var_type': 'str'}
         ]
 
-        self.card_group = CardGroup(
-            self,
-            num_cards=len(card_configs),
-            configs=card_configs
-        )
-
+        self.card_group = CardGroup(num_cards=len(card_configs), configs=card_configs)
         self.layout.addWidget(self.card_group)
-
 
         self.input_frame = InputFrame()
         self.layout.addWidget(self.input_frame)
