@@ -6,7 +6,7 @@ This widget shows a labeled text block with localization and updates support.
 
 from typing import Any
 
-from PyQt6.QtWidgets import QVBoxLayout, QLabel, QLineEdit, QWidget, QGridLayout
+from PyQt6.QtWidgets import QVBoxLayout, QLabel, QLineEdit, QWidget
 from PyQt6.QtCore import Qt
 
 from letterguesser.styles.padding import pad_0, pad_1
@@ -19,7 +19,6 @@ class TextBlockSegment(QWidget):
 
     def __init__(
             self,
-            parent: Any,
             localisation_key: str,
             initial_text: str,
             **kwargs: Any
@@ -27,26 +26,24 @@ class TextBlockSegment(QWidget):
         """
         Initialize the TextBlockSegment with initial text and localisation.
 
-        :param parent: The parent widget for the TextBlockSegment.
         :param localisation_key: Localisation key for the label.
         :param initial_text: Initial text to display in the text block.
         :param kwargs: Additional configuration options.
         """
-        super().__init__(parent, **kwargs)
+        super().__init__(**kwargs)
+
+        self.setObjectName('form-group')
 
         self.localisation = localisation
         self.manager = manager
 
         # layout
-        self.layout = QGridLayout(self)
-        self.layout.setContentsMargins(pad_0, pad_0, pad_0, pad_0)
-        self.layout.setSpacing(pad_0)
+        self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
 
         # label
         self.label = QLabel()
-        self.label.setAlignment(
-            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
-        )
+        self.label.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
         # text block
         self.text_block = QLineEdit()
