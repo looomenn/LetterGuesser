@@ -6,81 +6,69 @@ This block provides an input field with a localized label and optional placehold
 
 from typing import Any
 
-import customtkinter as ctk
+from PyQt6.QtWidgets import QVBoxLayout, QLabel, QLineEdit, QWidget
+from PyQt6.QtCore import Qt
 
-from letterguesser.gui.frames.BaseFrame import BaseFrame
-from letterguesser.styles.font import font, text_small, text_small_height
-from letterguesser.styles.padding import pad_0, pad_1
+from letterguesser.context import localisation, manager
 
 
-class InputBlock(BaseFrame):
+class InputBlock(QWidget):
     """Input block with a label and entry field."""
 
     def __init__(
             self,
-            parent,
-            loc_label_key,
-            loc_placeholder_key,
+            localisation_key,
+            placeholder_key: str | None = None,
+            initial_text: str = '-',
             is_disabled=False,
-            **kwargs
+            **kwargs: Any
     ):
         """
         Init InputBlock.
 
-        :param parent: The parent widget.
-        :param loc_label_key: Localisation key for the label.
-        :param loc_placeholder_key: Localisation key for the placeholder.
-        :param is_disabled: Whether the widget is disabled.
-        :param kwargs: Additional keywords.
+        :param localisation_key: Localization key for the label.
+        :param placeholder_key: Localization key for the placeholder text.
+        :param initial_text: Initial text to display in the input field.
+        :param is_disabled: Whether the input block should be disabled initially.
+        :param kwargs: Additional configuration options.
         """
-        super().__init__(parent, transparent_bg=True, **kwargs)
+        super().__init__(**kwargs)
 
-        self.input_var = ctk.StringVar(value='')
-        self.placeholder = loc_placeholder_key
+        self.setObjectName('form-group')
 
-        # label for the input
-        self.label = ctk.CTkLabel(
-            self,
-            height=text_small_height,
-            anchor='w',
-            font=ctk.CTkFont(
-                family=font,
-                size=text_small
-            )
-        )
+        self.localisation = localisation
+        self.manager = manager
+        self.placeholder_key = placeholder_key
 
-        self.localisation.bind(self.label, loc_label_key)
-        self.add_widget(
-            self.label,
-            side='top',
-            pady=(pad_0, pad_1)
-        )
+        self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.input_field = ctk.CTkEntry(
-            self,
-            textvariable=self.input_var,
-            height=40,
-            font=ctk.CTkFont(
-                family=font,
-                size=text_small
-            )
-        )
+        self.label = QLabel()
+        self.label.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.localisation.bind(self.label, localisation_key)
+        self.layout.addWidget(self.label)
 
-        self.localisation.bind(self.input_field, loc_placeholder_key, self.update_input)
-        self.add_widget(
-            self.input_field,
-            side='top',
-            pady=(pad_1, pad_0)
-        )
+        self.input_field = QLineEdit()
+
+        self.layout.addWidget(self.input_field)
+
+        if placeholder_key:
+            self.localisation.bind(self.input_field, placeholder_key, self.update_input)
+        else:
+            self.input_field.setText(initial_text)
 
         if is_disabled:
             self.disable()
 
-        self.input_field.bind('<Return>', self.input_handler)
+        self.input_field.returnPressed.connect(self.input_handler)
 
     def reset(self):
-        """Reset input block to default state."""
-        self.localisation.bind(self.input_field, self.placeholder, self.update_input)
+        """Reset the input block to its default state with the placeholder."""
+        self.localisation.bind(
+            self.input_field,
+            self.placeholder_key,
+            self.update_input
+        )
 
     def input_handler(self, _event) -> None:
         """Handle input events and forward the input to the manager."""
@@ -88,11 +76,11 @@ class InputBlock(BaseFrame):
 
     def get_input(self) -> Any:
         """Return the current input value."""
-        return self.input_var.get()
+        return self.input_field.text()
 
     def clear(self) -> None:
         """Clear the input field content."""
-        self.input_var.set('')
+        self.input_field.clear()
 
     def update_input(self, new_value: str) -> None:
         """
@@ -101,18 +89,20 @@ class InputBlock(BaseFrame):
         :param new_value: The value to set in the input field.
         :return: None
         """
-        self.input_var.set(new_value)
+        self.input_field.setText(new_value)
 
     def enable(self):
         """Enable the input field for user entry."""
-        self.input_field.configure(state='normal')
-        self.input_field.configure(
-            text_color=ctk.ThemeManager.theme['CTkEntry']['text_color']
-        )
+        self.input_field.setEnabled(True)
 
     def disable(self):
         """Disable the input field to prevent interaction."""
-        self.input_field.configure(state='disabled')
-        self.input_field.configure(
-            text_color=ctk.ThemeManager.theme['CTkEntry']['placeholder_text_color']
-        )
+        self.input_field.setEnabled(False)
+
+    def rebind(self, localisation_key: str) -> None:
+        """
+        Rebind the text block to a new localization key.
+
+        :param localisation_key: New localization key to bind to the text block.
+        """
+        self.localisation.bind(self.input_field, localisation_key, self.update_input)
