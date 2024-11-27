@@ -4,6 +4,8 @@ Utility functions for the LetterGuesser application.
 Contains helper functions for resource loading and text file operations.
 """
 
+import sass
+
 import sys
 from pathlib import Path
 
@@ -34,3 +36,24 @@ def load_texts(lang_code: str) -> str:
     with open(file_path, 'r', encoding='utf-8') as file:
         text_data = file.read()
     return text_data.replace('\n', '_').replace(' ', '_')
+
+
+def compile_scss(theme_folder: Path) -> dict:
+    """
+    Compile the SCSS for the given theme.
+
+    :param theme_folder: Path to the theme folder.
+    :return: Dictionary containing the compiled CSS variables.
+    """
+    theme_file = theme_folder / 'theme.scss'
+
+    if not theme_file.exists():
+        raise FileNotFoundError(f'SCSS file not found: {theme_file}')
+
+    compiled_css = sass.compile(fileobj=str(theme_file))
+
+    return dict(
+        line.split(':')
+        for line in compiled_css.split(';')
+        if line.strip() and ': ' in line
+    )
