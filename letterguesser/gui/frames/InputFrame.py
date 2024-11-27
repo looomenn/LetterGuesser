@@ -5,10 +5,10 @@ Provides an input block, action buttons, and text displays.
 """
 from typing import Any, Callable
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
 from letterguesser.gui.widgets import ButtonGroup, InputBlock, TextBlockSegment
-from letterguesser.styles.padding import pad_3, pad_4, pad_5
 
 from letterguesser.context import localisation, manager
 
@@ -32,35 +32,29 @@ class InputFrame(QFrame):
         # layout
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
-        self.layout.setSpacing(0)
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.layout.setSpacing(24)
 
-        self.random_text = TextBlockSegment(
-            self,
+        self.random_text = InputBlock(
             localisation_key='random_text_part',
-            initial_text='-'
+            placeholder_key='no_input',
+            is_disabled=True
         )
         self.layout.addWidget(self.random_text)
 
-        self.used_chars = TextBlockSegment(
-            self,
+        self.used_chars = InputBlock(
             localisation_key='used_chars',
-            initial_text='-'
+            placeholder_key='no_input',
+            is_disabled=True
         )
         self.layout.addWidget(self.used_chars)
 
-        # self.input = InputBlock(
-        #     self,
-        #     loc_label_key='main_input_label',
-        #     loc_placeholder_key='main_input_placeholder',
-        #     is_disabled=True
-        # )
-        # self.add_widget(
-        #     self.input,
-        #     side='top',
-        #     expand=False,
-        #     padx=pad_5,
-        #     pady=pad_4
-        # )
+        self.input = InputBlock(
+            localisation_key='main_input_label',
+            placeholder_key='main_input_placeholder',
+            is_disabled=True
+        )
+        self.layout.addWidget(self.input)
 
         buttons_configs = [
             {
