@@ -6,6 +6,7 @@ Contains helper functions for resource loading and text file operations.
 
 import sass
 
+import re
 import sys
 from pathlib import Path
 
@@ -38,22 +39,38 @@ def load_texts(lang_code: str) -> str:
     return text_data.replace('\n', '_').replace(' ', '_')
 
 
-def compile_scss(theme_folder: Path) -> dict:
+def compile_scss(theme_folder: Path, primitives: Path) -> dict:
     """
     Compile the SCSS for the given theme.
 
     :param theme_folder: Path to the theme folder.
+    :param primitives: Path to the primitives.
     :return: Dictionary containing the compiled CSS variables.
     """
-    theme_file = theme_folder / 'theme.scss'
+    theme_file = get_resource_path(theme_folder / 'theme.scss')
+    primitive_file = get_resource_path(primitives)
 
     if not theme_file.exists():
         raise FileNotFoundError(f'SCSS file not found: {theme_file}')
 
-    compiled_css = sass.compile(fileobj=str(theme_file))
+    if not primitive_file.exists():
+        raise FileNotFoundError(f'Primitives file not found: {primitives}')
 
-    return dict(
-        line.split(':')
-        for line in compiled_css.split(';')
-        if line.strip() and ': ' in line
-    )
+    scss = f"""
+    @import "{primitive_file.as_posix()}";
+    @import "{theme_file.as_posix()}";
+    """
+
+    try:
+        compiled_css = sass.compile(string=scss)
+    except Exception as e:
+        raise RuntimeError(f'Could not compile SCSS file: {e}')
+
+    var_pattern = re.compile(r'--([\w-]+):\s*([^;]+);')
+    variables = {}
+    for match in var_pattern.finditer(compiled_css):
+        key = match[1].replace('-', '_')
+        value = match[2].strip()
+        variables[key] = value
+
+    return variables
