@@ -1,0 +1,39 @@
+// Fonts
+
+$font-base: 16px;
+
+:root {
+  --fontStack-system: 'SF Pro Text', 'Segoe UI', 'Noto Sans', 'Helvetica', 'Arial', 'sans-serif';
+
+  --text-title-weight-large: 600;
+  --text-title-weight-small: 600;
+  --text-title-weight-medium: 600;
+
+  --text-title-size-large: #{2 * $font-base};
+  --text-title-size-medium: #{1.25 * $font-base};
+  --text-title-size-small: #{1 * $font-base};
+
+  --text-body-size-large: #{1 * $font-base};
+  --text-body-size-medium: #{0.875 * $font-base};
+  --text-body-size-small: #{0.75 * $font-base};
+
+  // borders
+  --borderWidth-thin: 1px;
+  --borderWidth-thick: 2px;
+  --borderWidth-thicker: 4px;
+  --borderRadius-small: 3px;
+  --borderRadius-medium: 6px;
+  --borderRadius-large: 12px;
+  --borderRadius-full: 9999px;
+  --borderRadius-default: 6px;
+  --outline-focus-offset: -2px;
+  --outline-focus-width: 2px;
+}
+
+:root {
+  --base-text-weight-light: 300;
+  --base-text-weight-normal: 400;
+  --base-text-weight-medium: 500;
+  --base-text-weight-semibold: 600;
+}
+
