@@ -1,0 +1,202 @@
+// copyright: github/premier - dark
+// https://primer.style/
+
+:root {
+  --fgColor-default: #f0f6fc;
+  --fgColor-muted: #9198a1;
+  --fgColor-onEmphasis: #ffffff;
+  --fgColor-onInverse: #010409;
+  --fgColor-white: #ffffff;
+  --fgColor-black: #010409;
+  --fgColor-disabled: rgba(101, 108, 118, 0.60);
+  --fgColor-link: #4493f8;
+  --fgColor-neutral: #9198a1;
+  --fgColor-accent: #4493f8;
+  --fgColor-success: #3fb950;
+  --fgColor-open: #3fb950;
+  --fgColor-attention: #d29922;
+  --fgColor-severe: #db6d28;
+  --fgColor-danger: #f85149;
+  --fgColor-closed: #f85149;
+  --fgColor-done: #ab7df8;
+  --fgColor-upsell: #ab7df8;
+  --fgColor-sponsors: #db61a2;
+  --bgColor-default: #0d1117;
+  --bgColor-muted: #151b23;
+  --bgColor-inset: #010409;
+  --bgColor-emphasis: #3d444d;
+  --bgColor-inverse: #ffffff;
+  --bgColor-white: #ffffff;
+  --bgColor-black: #010409;
+  --bgColor-disabled: #212830;
+  --bgColor-transparent: rgba(0, 0, 0, 0.00);
+  --bgColor-neutral-muted: rgba(101, 108, 118, 0.20);
+  --bgColor-neutral-emphasis: #656c76;
+  --bgColor-accent-muted: rgba(56, 139, 253, 0.10);
+  --bgColor-accent-emphasis: #1f6feb;
+  --bgColor-success-muted: rgba(46, 160, 67, 0.15);
+  --bgColor-success-emphasis: #238636;
+  --bgColor-open-muted: rgba(46, 160, 67, 0.15);
+  --bgColor-open-emphasis: #238636;
+  --bgColor-attention-muted: rgba(187, 128, 9, 0.15);
+  --bgColor-attention-emphasis: #9e6a03;
+  --bgColor-severe-muted: rgba(219, 109, 40, 0.10);
+  --bgColor-severe-emphasis: #bd561d;
+  --bgColor-danger-muted: rgba(248, 81, 73, 0.10);
+  --bgColor-danger-emphasis: #da3633;
+  --bgColor-closed-muted: rgba(248, 81, 73, 0.10);
+  --bgColor-closed-emphasis: #da3633;
+  --bgColor-done-muted: rgba(171, 125, 248, 0.15);
+  --bgColor-done-emphasis: #8957e5;
+  --bgColor-upsell-muted: rgba(171, 125, 248, 0.15);
+  --bgColor-upsell-emphasis: #8957e5;
+  --bgColor-sponsors-muted: rgba(219, 97, 162, 0.10);
+  --bgColor-sponsors-emphasis: #bf4b8a;
+  --borderColor-default: #3d444d;
+  --borderColor-muted: rgba(61, 68, 77, 0.70);
+  --borderColor-emphasis: #656c76;
+  --borderColor-disabled: rgba(101, 108, 118, 0.10);
+  --borderColor-transparent: rgba(0, 0, 0, 0.00);
+  --borderColor-translucent: rgba(255, 255, 255, 0.15);
+  --borderColor-neutral-muted: rgba(61, 68, 77, 0.70);
+  --borderColor-neutral-emphasis: #656c76;
+  --borderColor-accent-muted: rgba(56, 139, 253, 0.40);
+  --borderColor-accent-emphasis: #1f6feb;
+  --borderColor-success-muted: rgba(46, 160, 67, 0.40);
+  --borderColor-success-emphasis: #238636;
+  --borderColor-open-muted: rgba(46, 160, 67, 0.40);
+  --borderColor-open-emphasis: #238636;
+  --borderColor-attention-muted: rgba(187, 128, 9, 0.40);
+  --borderColor-attention-emphasis: #9e6a03;
+  --borderColor-severe-muted: rgba(219, 109, 40, 0.40);
+  --borderColor-severe-emphasis: #bd561d;
+  --borderColor-danger-muted: rgba(248, 81, 73, 0.40);
+  --borderColor-danger-emphasis: #da3633;
+  --borderColor-closed-muted: rgba(248, 81, 73, 0.40);
+  --borderColor-closed-emphasis: #da3633;
+  --borderColor-done-muted: rgba(171, 125, 248, 0.40);
+  --borderColor-done-emphasis: #8957e5;
+  --borderColor-upsell-muted: rgba(171, 125, 248, 0.40);
+  --borderColor-upsell-emphasis: #8957e5;
+  --borderColor-sponsors-muted: rgba(219, 97, 162, 0.40);
+  --borderColor-sponsors-emphasis: #bf4b8a;
+
+  // default button
+  --button-default-fgColor-rest: #f0f6fc;
+  --button-default-bgColor-rest: #212830;
+  --button-default-bgColor-hover: #262c36;
+  --button-default-bgColor-active: #2a313c;
+  --button-default-bgColor-selected: #2a313c;
+  --button-default-bgColor-disabled: #212830;
+  --button-default-borderColor-rest: #3d444d;
+  --button-default-borderColor-hover: #3d444d;
+  --button-default-borderColor-active: #3d444d;
+  --button-default-borderColor-disabled: rgba(101, 108, 118, 0.10);
+  --button-default-shadow-resting: 0px 0px 0px 0px #000000;
+
+  // primary
+  --button-primary-fgColor-rest: #ffffff;
+  --button-primary-fgColor-disabled: rgba(255, 255, 255, 0.40);
+  --button-primary-iconColor-rest: #ffffff;
+  --button-primary-bgColor-rest: #238636;
+  --button-primary-bgColor-hover: #29903b;
+  --button-primary-bgColor-active: #2e9a40;
+  --button-primary-bgColor-disabled: #105823;
+  --button-primary-borderColor-rest: rgba(255, 255, 255, 0.10);
+  --button-primary-borderColor-hover: rgba(255, 255, 255, 0.10);
+  --button-primary-borderColor-active: rgba(255, 255, 255, 0.10);
+  --button-primary-borderColor-disabled: #105823;
+  --button-primary-shadow-selected: 0px 0px 0px 0px #000000;
+
+  // invisible
+  --button-invisible-fgColor-rest: #f0f6fc;
+  --button-invisible-fgColor-hover: #f0f6fc;
+  --button-invisible-fgColor-disabled: rgba(101, 108, 118, 0.60);
+  --button-invisible-iconColor-rest: #9198a1;
+  --button-invisible-iconColor-hover: #9198a1;
+  --button-invisible-iconColor-disabled: rgba(101, 108, 118, 0.60);
+  --button-invisible-bgColor-rest: rgba(0, 0, 0, 0.00);
+  --button-invisible-bgColor-hover: rgba(101, 108, 118, 0.20);
+  --button-invisible-bgColor-active: rgba(101, 108, 118, 0.25);
+  --button-invisible-bgColor-disabled: #212830;
+  --button-invisible-borderColor-rest: rgba(0, 0, 0, 0.00);
+  --button-invisible-borderColor-hover: rgba(0, 0, 0, 0.00);
+  --button-invisible-borderColor-disabled: rgba(101, 108, 118, 0.10);
+
+  // outline
+  --button-outline-fgColor-rest: #388bfd;
+  --button-outline-fgColor-hover: #58a6ff;
+  --button-outline-fgColor-active: #ffffff;
+  --button-outline-fgColor-disabled: rgba(68, 147, 248, 0.50);
+  --button-outline-bgColor-rest: #f0f6fc;
+  --button-outline-bgColor-hover: #262c36;
+  --button-outline-bgColor-active: #0d419d;
+  --button-outline-bgColor-disabled: #212830;
+  --button-outline-borderColor-hover: #3d444d;
+  --button-outline-borderColor-selected: #3d444d;
+  --button-outline-shadow-selected: 0px 0px 0px 0px #000000;
+
+  // danger
+  --button-danger-fgColor-rest: #fa5e55;
+  --button-danger-fgColor-hover: #ffffff;
+  --button-danger-fgColor-active: #ffffff;
+  --button-danger-fgColor-disabled: rgba(248, 81, 73, 0.50);
+  --button-danger-iconColor-rest: #fa5e55;
+  --button-danger-iconColor-hover: #ffffff;
+  --button-danger-bgColor-rest: #212830;
+  --button-danger-bgColor-hover: #b62324;
+  --button-danger-bgColor-active: #d03533;
+  --button-danger-bgColor-disabled: #212830;
+  --button-danger-borderColor-rest: #3d444d;
+  --button-danger-borderColor-hover: rgba(255, 255, 255, 0.10);
+  --button-danger-borderColor-active: rgba(255, 255, 255, 0.10);
+  --button-danger-shadow-selected: 0px 0px 0px 0px #000000;
+
+
+  // control - default
+  --control-bgColor-rest: #212830;
+  --control-bgColor-hover: #262c36;
+  --control-bgColor-active: #2a313c;
+  --control-bgColor-disabled: #212830;
+  --control-bgColor-selected: #212830;
+
+  --control-fgColor-rest: #f0f6fc;
+  --control-fgColor-placeholder: #9198a1;
+  --control-fgColor-disabled: rgba(101, 108, 118, 0.60);
+  --control-borderColor-rest: #3d444d;
+
+  --control-borderColor-emphasis: #656c76;
+  --control-borderColor-disabled: rgba(101, 108, 118, 0.10);
+  --control-borderColor-selected: #f0f6fc;
+  --control-borderColor-success: #238636;
+  --control-borderColor-danger: #da3633;
+  --control-borderColor-warning: #9e6a03;
+
+  // control - transparent
+  --control-transparent-bgColor-rest: rgba(0, 0, 0, 0.00);
+  --control-transparent-bgColor-hover: rgba(101, 108, 118, 0.20);
+  --control-transparent-bgColor-active: rgba(101, 108, 118, 0.25);
+  --control-transparent-bgColor-disabled: #212830;
+  --control-transparent-bgColor-selected: rgba(101, 108, 118, 0.10);
+  --control-transparent-borderColor-rest: rgba(0, 0, 0, 0.00);
+  --control-transparent-borderColor-hover: rgba(0, 0, 0, 0.00);
+  --control-transparent-borderColor-active: rgba(0, 0, 0, 0.00);
+
+  // control - danger
+  --control-danger-fgColor-rest: #f85149;
+  --control-danger-fgColor-hover: #ff7b72;
+  --control-danger-bgColor-hover: rgba(248, 81, 73, 0.10);
+  --control-danger-bgColor-active: rgba(248, 81, 73, 0.40);
+
+  // control - checked
+  --control-checked-bgColor-rest: #1f6feb;
+  --control-checked-bgColor-hover: #2a7aef;
+  --control-checked-bgColor-active: #3685f3;
+  --control-checked-bgColor-disabled: rgba(101, 108, 118, 0.60);
+  --control-checked-fgColor-rest: #ffffff;
+  --control-checked-fgColor-disabled: #010409;
+  --control-checked-borderColor-rest: #1f6feb;
+  --control-checked-borderColor-hover: #2a7aef;
+  --control-checked-borderColor-active: #3685f3;
+  --control-checked-borderColor-disabled: rgba(101, 108, 118, 0.60);
+}
