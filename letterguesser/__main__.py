@@ -53,7 +53,7 @@ class App(QMainWindow):
         self.menu_bar = MenuBar(self, self.localisation, self.manager)
         self.setMenuBar(self.menu_bar)
 
-        self.left_frame = LeftFrame(self)
+        self.left_frame = LeftFrame()
         self.main_layout.addWidget(self.left_frame)
 
         self.init_shortcuts()
