@@ -14,7 +14,6 @@ class CardGroup(QWidget):
 
     def __init__(
             self,
-            parent,
             num_cards,
             configs,
             **kwargs
@@ -22,13 +21,11 @@ class CardGroup(QWidget):
         """
         Init the CardGroup.
 
-        :param parent: The parent widget.
         :param num_cards: Number of cards to create.
         :param configs: Config for each card with label_key, initial_value, var_type.
         :param kwargs: Additional keyword arguments.
         """
         super().__init__(
-            parent,
             **kwargs
         )
 
