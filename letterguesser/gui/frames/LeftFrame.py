@@ -37,6 +37,7 @@ class LeftFrame(QFrame):
         # layout
         self.layout = QVBoxLayout(self)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.layout.setSpacing(16)
 
         card_configs = [
             {"label_key": "experiment_number", 'initial_value': 0, 'var_type': 'int'},
