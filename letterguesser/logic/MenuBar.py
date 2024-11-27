@@ -112,8 +112,12 @@ class MenuBar(QMenuBar):
         themes_path = get_resource_path('assets/themes')
         theme_folder = themes_path / theme
         try:
-            theme_variables = compile_scss(theme_folder)
+            theme_variables = compile_scss(
+                theme_folder,
+                themes_path / 'primitives.scss'
+            )
             base_qss_path = themes_path / 'base.qss'
+
             with open(base_qss_path, 'r') as base_file:
                 base_template = Template(base_file.read())
 
