@@ -5,7 +5,7 @@ Each card has a label and a value field, supporting localization and value updat
 """
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QLabel, QWidget, QGridLayout, QFrame
+from PyQt6.QtWidgets import QLabel, QWidget, QVBoxLayout, QFrame
 
 from letterguesser.context import localisation, manager
 from letterguesser.styles.padding import pad_0, pad_2
@@ -42,24 +42,22 @@ class Card(QFrame):
         self.var_type = var_type
 
         # layout
-        self.layout = QGridLayout(self)
-        self.layout.setContentsMargins(pad_0, pad_0, pad_0, pad_0)
-        self.layout.setSpacing(pad_0)
+        self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)  # remove all unnecessary paddings
+
+        # set spacing explicitly to avoid misalignment issues caused by QSS
+        self.layout.setSpacing(10)
 
         # value label
         self.value_label = QLabel()
-        self.value_label.setObjectName('CardValueLabel')
-        self.value_label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+        self.value_label.setObjectName('card-value')
         self.update_value(initial_value)
+        self.layout.addWidget(self.value_label)
 
         # description label
         self.label = QLabel()
-        self.label.setObjectName('CardLabel')
-        self.label.setAlignment(Qt.AlignmentFlag.AlignVCenter)
-
+        self.label.setObjectName('card-label')
         self.localisation.bind(self.label, loc_label_key)
-
-        self.layout.addWidget(self.value_label)
         self.layout.addWidget(self.label)
 
     def update_value(self, value: str | int):
