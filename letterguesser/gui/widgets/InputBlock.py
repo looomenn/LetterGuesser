@@ -42,6 +42,7 @@ class InputBlock(QWidget):
 
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(6)
 
         self.label = QLabel()
         self.label.setAlignment(Qt.AlignmentFlag.AlignLeft)
@@ -70,7 +71,7 @@ class InputBlock(QWidget):
             self.update_input
         )
 
-    def input_handler(self, _event) -> None:
+    def input_handler(self) -> None:
         """Handle input events and forward the input to the manager."""
         self.manager.input_handler(self.get_input())
 
