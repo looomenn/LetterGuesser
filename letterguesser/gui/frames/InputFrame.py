@@ -3,12 +3,12 @@ InputFrame for user input and control buttons.
 
 Provides an input block, action buttons, and text displays.
 """
-from typing import Any, Callable
+from typing import Optional, Callable
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
-from letterguesser.gui.widgets import ButtonGroup, InputBlock, TextBlockSegment
+from letterguesser.gui.widgets import ButtonGroup, InputBlock
 
 from letterguesser.context import localisation, manager
 
@@ -58,9 +58,8 @@ class InputFrame(QFrame):
 
         buttons_configs = [
             {
-                "type": "option_menu",
+                "type": "combobox",
                 "label_key": "char_numbers",
-                "initial_value": 5,
                 "command": self.manager.change_ngram,
                 "values": [i for i in range(5, 55, 5)]
             },
@@ -75,18 +74,12 @@ class InputFrame(QFrame):
                 "type": "button",
                 "label_key": "start",
                 "style": "primary",
-                "command": self.manager.start_experiment,
+                "command": self.manager.start_experiment
             }
         ]
 
-        # self.actions = ButtonGroup(self, buttons_configs)
-        # self.add_widget(
-        #     self.actions,
-        #     side='top',
-        #     expand=False,
-        #     pady=(pad_4, pad_5),
-        #     padx=pad_5
-        # )
+        self.actions = ButtonGroup(buttons_configs)
+        self.layout.addWidget(self.actions)
 
         self.local_blocks = {
             'random_text': self.random_text,
@@ -117,7 +110,7 @@ class InputFrame(QFrame):
         block = self.local_blocks.get(block_name)
 
         if block:
-            block.update_value(text)
+            block.update_input(text)
 
     def block_clear(self, block_name: str) -> None:
         """Clear the content of a specified block."""
@@ -166,8 +159,11 @@ class InputFrame(QFrame):
         if button and label:
             self.localisation.bind(button, label)
 
-    def button_set_command(self, button_name: str, command: Callable[[str], Any])\
-            -> None:
+    def button_set_command(
+            self,
+            button_name: str,
+            command: Optional[Callable[[str], None]]
+    ) -> None:
         """Set a button's command dynamically."""
         button = self.actions.get_button(button_name)
 
