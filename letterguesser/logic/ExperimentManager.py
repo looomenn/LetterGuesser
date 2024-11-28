@@ -97,6 +97,7 @@ class ExperimentManager:
 
         :param value: String representation of the new n-gram order.
         """
+        print(value)
         value = value.split(' ')[0].strip()
         self.ngram_order = int(value)
 
@@ -225,23 +226,20 @@ class ExperimentManager:
         self.input_events['reset'].notify()  # reset input block
 
         # block events
-        self.block_events['reset'].notify(
-            block_name='status'
-        )  # reset user chars block
-
-        self.block_events['reset'].notify(
-            block_name='used_chars'
-        )  # reset user chars block
-
-        self.block_events['reset'].notify(
-            block_name='random_text'
-        )  # reset random text block
+        self.block_events['reset'].notify(block_name='status')
+        self.block_events['reset'].notify(block_name='used_chars')
+        self.block_events['reset'].notify(block_name='random_text')
 
         # button events
         self.button_events['state_change'].notify(
             button_name='button_start',
             state='enable'
         )
+        self.button_events['label_change'].notify(
+            button_name='button_start',
+            label='start'
+        )
+
         self.button_events['state_change'].notify(
             button_name='button_reset',
             state='disable'
