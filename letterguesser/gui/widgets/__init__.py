@@ -21,7 +21,7 @@ from .ButtonGroup import ButtonGroup
 from .Card import Card
 from .CardGoup import CardGroup
 from .InputBlock import InputBlock
-from .OptionMenu import OptionMenu
+from .ComboBox import ComboBox
 from .TextBlockSegment import TextBlockSegment
 
 __all__ = [
@@ -31,5 +31,5 @@ __all__ = [
     'InputBlock',
     'Button',
     'ButtonGroup',
-    'OptionMenu'
+    'ComboBox'
 ]
