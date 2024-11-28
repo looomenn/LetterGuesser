@@ -66,10 +66,10 @@ QMenu::item:selected{
 QLineEdit {
     padding: 5px 12px;
     font-size: ${text_body_size_medium};
+    font-weight: ${base_text_weight_normal};
     color: ${fgColor_default};
     border: ${borderWidth_thin} solid ${control_borderColor_rest};
     border-radius: ${borderRadius_medium};
-    font-weight: ${base_text_weight_medium};
     max-width: 440px;
 }
 
@@ -80,7 +80,134 @@ QLineEdit:disabled{
 }
 
 #form-group > QLabel {
-    margin-bottom: 6px;
     font-weight: ${base_text_weight_semibold};
-    font-size: ${text_body_size_medium}
+    font-size: ${text_body_size_medium};
+}
+
+QPushButton {
+    padding: 10px 16px;
+    font-size: ${text_body_size_medium};
+    font-weight: ${base_text_weight_medium};
+    border-radius: ${borderRadius_medium};
+}
+
+QPushButton[class="btn-danger"] {
+    background-color: ${button_default_bgColor_rest};
+    color: ${button_danger_fgColor_rest};
+    border: ${borderWidth_thin} solid ${button_danger_borderColor_rest};
+}
+
+QPushButton[class="btn-danger"]::disabled{
+    background-color: ${button_danger_bgColor_disabled};
+    color: ${fgColor_disabled};
+}
+
+QPushButton[class="btn-danger"]::hover {
+    background-color: ${button_danger_bgColor_hover};
+    color: ${button_danger_fgColor_hover};
+    border: ${borderWidth_thin} solid ${button_danger_borderColor_hover};
+}
+
+QPushButton[class="btn-danger"]::pressed {
+    background-color: ${button_danger_bgColor_active};
+    color: ${button_danger_fgColor_active};
+    border: ${borderWidth_thin} solid ${button_danger_borderColor_active};
+}
+
+QPushButton[class="btn-secondary"] {
+    background-color: ${button_default_bgColor_rest};
+    color: ${button_default_fgColor_rest};
+    border: ${borderWidth_thin} solid ${button_default_borderColor_rest};
+}
+
+QPushButton[class="btn-secondary"]::disabled{
+    background-color: ${button_default_bgColor_disabled};
+    color: ${fgColor_disabled};
+}
+
+QPushButton[class="btn-secondary"]::hover {
+    background-color: ${button_default_bgColor_hover};
+    color: ${button_default_fgColor_rest};
+    border: ${borderWidth_thin} solid ${button_default_borderColor_hover};
+}
+
+QPushButton[class="btn-secondary"]::pressed {
+    background-color: ${button_default_bgColor_active};
+    color: ${button_default_fgColor_rest};
+    border: ${borderWidth_thin} solid ${button_default_borderColor_hover};
+}
+
+
+QPushButton[class="btn-primary"] {
+    background-color: ${button_primary_bgColor_rest};
+    color: ${button_primary_fgColor_rest};
+    border: ${borderWidth_thin} solid ${button_primary_borderColor_rest};
+}
+
+QPushButton[class="btn-primary"]::disabled{
+    background-color: ${button_primary_bgColor_disabled};
+    color: ${button_primary_fgColor_disabled};
+    border: ${borderWidth_thin} solid ${button_primary_borderColor_disabled};
+}
+
+QPushButton[class="btn-primary"]::hover {
+    background-color: ${button_primary_bgColor_hover};
+    color: ${button_primary_fgColor_rest};
+    border: ${borderWidth_thin} solid ${button_primary_borderColor_hover};
+}
+
+QPushButton[class="btn-primary"]::pressed {
+    background-color: ${button_primary_bgColor_active};
+    color: ${button_primary_fgColor_rest};
+    border: ${borderWidth_thin} solid ${button_primary_borderColor_hover};
+}
+
+
+QComboBox {
+    padding: 10px 16px;
+    background-color: ${bgColor_muted};
+    border: ${borderWidth_thin} solid ${control_borderColor_rest};
+    border-radius: ${borderRadius_medium};
+    font-size: ${text_body_size_medium};
+    font-weight: ${base_text_weight_medium};
+}
+
+QComboBox::drop-down{
+    subcontrol-origin: border ;
+    subcontrol-position: right center;
+    border-top-right-radius: ${borderRadius_medium};
+    border-bottom-right-radius: ${borderRadius_medium};
+}
+
+QComboBox::down-arrow {
+    image: url('letterguesser/assets/icons/expand.svg');
+    width: 20px;
+    right: 8px;
+}
+
+QComboBox::item{
+    color: ${fgColor_onEmphasis};
+    border-radius: ${borderRadius_medium};
+    height: auto;
+    width: auto;
+}
+
+QComboBox QAbstractItemView {
+    padding: 0px 4px;
+    background-color: ${bgColor_transparent};
+}
+
+QComboBox::item:selected{
+    background: ${bgColor_accent_emphasis};
+}
+
+QComboBox::indicator{
+    left: 4px;
+    top: -2px;
+}
+
+QComboBox:disabled {
+    border:  ${borderWidth_thin} solid ${control_borderColor_disabled};
+    color: ${fgColor_disabled};
+    background-color: ${control_bgColor_disabled};
 }
