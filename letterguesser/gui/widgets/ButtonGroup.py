@@ -6,11 +6,12 @@ This class allows organizing multiple buttons with shared settings and access.
 
 from typing import Any, Dict, Union
 
-from letterguesser.gui.frames.BaseFrame import BaseFrame
-from letterguesser.styles.padding import pad_0, pad_2
+
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QFrame, QHBoxLayout
 
 from .Button import Button
-from .OptionMenu import OptionMenu
+from .ComboBox import ComboBox
 
 
 def to_bool(value: str | bool) -> bool:
@@ -29,69 +30,70 @@ def to_list(value: str | list[str]) -> list[str]:
         return [value]
 
 
-class ButtonGroup(BaseFrame):
+def _create_button(config: Dict[str, Any]) -> Button:
+    """Create a `Button` based on the configuration."""
+    is_disabled = to_bool(config.get('is_disabled', False))
+    command = config.get('command', None)
+
+    return Button(
+        label=config['label_key'],
+        style=config.get('style', 'default'),
+        command=command,
+        is_disabled=is_disabled
+    )
+
+
+def _create_combobox(config: Dict[str, Any]) -> ComboBox:
+    """Create a `ComboBox` based on the configuration"""
+    values = to_list(config.get('values', []))
+    command = config.get('command', None)
+
+    return ComboBox(
+        label=config['label_key'],
+        values=values,
+        command=command
+    )
+
+
+class ButtonGroup(QFrame):
     """A container for managing buttons and option menus."""
 
     def __init__(
             self,
-            parent: BaseFrame,
             configs: list[dict[str, Any]],
-            gap: int = pad_2,
-            **kwargs
+            gap: int = 10,
+            **kwargs: Any
     ):
         """
         Init ButtonGroup class.
 
-        :param parent: The parent widget.
         :param configs: List of button configurations (label_key, style, etc.).
         :param gap: The gap between buttons, by default pad_2.
         :param kwargs: Additional keywords for CTkButton class
         """
-        super().__init__(parent, transparent_bg=True, **kwargs)
+        super().__init__(**kwargs)
 
-        self.buttons: Dict[str, Union[Button, OptionMenu]] = {}
+        self.setObjectName('btn-group')
+
+        self.layout = QHBoxLayout(self)
+        self.layout.setSpacing(gap)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        self.buttons: Dict[str, Union[Button, ComboBox]] = {}
 
         for i, config in enumerate(configs):
 
             widget_type = config.get('type', 'button')
 
             if widget_type == 'button':
-                is_disabled_ = config.get('is_disabled', False)
-                is_disabled = to_bool(is_disabled_)
-
-                command = config.get('command', None)
-
-                item = Button(
-                    parent=self,
-                    label_key=config['label_key'],
-                    style=config.get('style', 'default'),
-                    command=command,
-                    is_disabled=is_disabled
-                )
-            elif widget_type == 'option_menu':
-                values_ = config.get('values', [])
-                values = to_list(values_)
-
-                command = config.get('command', None)
-
-                item = OptionMenu(
-                    parent=self,
-                    label_key=config['label_key'],
-                    initial_value=config.get('initial_value', ''),
-                    values=values,
-                    command=command
-                )
+                item = _create_button(config)
+            elif widget_type == 'combobox':
+                item = _create_combobox(config)
             else:
                 raise ValueError(f"Unsupported widget type: {widget_type}")
 
-            self.add_widget(
-                item,
-                side='left',
-                expand=False,
-                fill='x',
-                padx=(pad_0, gap) if i < len(configs) - 1 else pad_0,
-            )
-
+            self.layout.addWidget(item)
             self.buttons[f'button_{config["label_key"]}'] = item
 
     def get_button(self, key: str) -> Button | None:
