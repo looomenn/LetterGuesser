@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased - 2024-12-02
+
+### Added
+- Toast notification widget
+- ComboBox widget
+- Icon for the `ComboBox`
+
+### Changed
+- Move app settings to the `QSettings`
+- Adjust `Buttons` styles
+- Migrate `Button` to `PyQt6`
+
+### Deprecated
+- Status Frame
+- OptionMenu widget
+
 ## [2.0.0-alpha.2] - 2024-11-27
 
 ### Added
