@@ -186,7 +186,7 @@ QComboBox::down-arrow {
 }
 
 QComboBox::item{
-    color: ${fgColor_onEmphasis};
+    color: ${fgColor_default};
     border-radius: ${borderRadius_medium};
     height: auto;
     width: auto;
@@ -194,11 +194,12 @@ QComboBox::item{
 
 QComboBox QAbstractItemView {
     padding: 0px 4px;
-    background-color: ${bgColor_transparent};
+    background-color: ${bgColor_default};
 }
 
 QComboBox::item:selected{
     background: ${bgColor_accent_emphasis};
+    color: ${fgColor_onEmphasis}
 }
 
 QComboBox::indicator{
