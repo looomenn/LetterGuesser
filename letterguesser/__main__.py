@@ -20,12 +20,10 @@ from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QWidget
 
 from letterguesser.config import APP_SIZE, APP_TITLE
-from letterguesser.context import localisation, manager
+from letterguesser.context import localisation, manager, settings
 from letterguesser.gui.frames.LeftFrame import LeftFrame
 from letterguesser.logic.MenuBar import MenuBar
 from letterguesser.styles.padding import pad_6
-
-from letterguesser.logic.utils import get_resource_path
 
 
 class App(QMainWindow):
@@ -42,6 +40,7 @@ class App(QMainWindow):
         # from context set global localisation instance
         self.localisation = localisation
         self.manager = manager
+        self.settings = settings
 
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
@@ -50,7 +49,11 @@ class App(QMainWindow):
         self.main_layout.setContentsMargins(pad_6, pad_6, pad_6, pad_6)
         self.main_layout.setSpacing(pad_6)
 
-        self.menu_bar = MenuBar(self, self.localisation, self.manager)
+        self.menu_bar = MenuBar(
+            self,
+            self.localisation,
+            self.manager,
+        )
         self.setMenuBar(self.menu_bar)
 
         self.left_frame = LeftFrame()
