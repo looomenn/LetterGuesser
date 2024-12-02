@@ -211,3 +211,11 @@ QComboBox:disabled {
     color: ${fgColor_disabled};
     background-color: ${control_bgColor_disabled};
 }
+
+#toast_label{
+    background-color: ${bgColor_default};
+    color: ${fgColor_default};
+    border:  ${borderWidth_thin} solid ${borderColor_default};
+    padding: 12px;
+    border-radius: ${borderRadius_large};
+}
