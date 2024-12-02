@@ -32,11 +32,16 @@ consistent use across the application:
     logger.info("Application started")
     manager.start_experiment()
 """
+
+from PyQt6.QtCore import QSettings
+
 import logging.config
 
 from letterguesser.config import DEFAULT_LANGUAGE_CODE
 from letterguesser.logic.ExperimentManager import ExperimentManager
 from letterguesser.logic.Localisation import Localisation
+
+settings: QSettings = QSettings('ange1o', 'LetterGuesser')
 
 # Global instance of the Localisation
 localisation: Localisation = Localisation(
@@ -72,4 +77,4 @@ logging.config.dictConfig(logging_config)
 # Global instance of the Experiment Manager
 manager: ExperimentManager = ExperimentManager(localisation, logger)
 
-__all__ = ['localisation', 'manager', 'logger']
+__all__ = ['localisation', 'manager', 'logger', 'settings']
