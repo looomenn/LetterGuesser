@@ -173,7 +173,7 @@ QComboBox {
 }
 
 QComboBox::drop-down{
-    subcontrol-origin: border ;
+    subcontrol-origin: border;
     subcontrol-position: right center;
     border-top-right-radius: ${borderRadius_medium};
     border-bottom-right-radius: ${borderRadius_medium};
@@ -193,13 +193,16 @@ QComboBox::item{
 }
 
 QComboBox QAbstractItemView {
-    padding: 0px 4px;
+    margin-top: 8px;
+    padding: 4px 4px;
     background-color: ${bgColor_default};
+    border:  ${borderWidth_thin} solid ${borderColor_default};
+    border-radius: ${borderRadius_medium};
 }
 
 QComboBox::item:selected{
     background: ${bgColor_accent_emphasis};
-    color: ${fgColor_onEmphasis}
+    color: ${fgColor_onEmphasis};
 }
 
 QComboBox::indicator{
