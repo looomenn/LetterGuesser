@@ -8,11 +8,12 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
 from letterguesser.gui.widgets.CardGoup import CardGroup
+from letterguesser.gui.widgets.Toast import Toast
 
 from letterguesser.context import localisation, manager, logger
-
 from letterguesser.gui.frames.InputFrame import InputFrame
 
+from letterguesser.logic.utils import get_color_scheme
 
 class LeftFrame(QFrame):
     """
@@ -51,15 +52,20 @@ class LeftFrame(QFrame):
         self.input_frame = InputFrame()
         self.layout.addWidget(self.input_frame)
 
-        # self.status_frame = StatusFrame(self)
-        # self.add_widget(
-        #     self.status_frame,
-        #     alignment=Qt.AlignmentFlag.AlignLeft
-        # )
+        self.active_toasts = []
 
         self.manager.card_events['update'].subscribe(self.card_update_value)
         self.manager.card_events['reset_all'].subscribe(self.card_reset_all)
         self.manager.card_events['reset'].subscribe(self.card_reset)
+
+        self.manager.block_events['rebind'].subscribe(self.toast_show)
+        # self.manager.block_events['reset'].subscribe(self.status_reset)
+
+    def toast_show(self, block_name, key: str, duration: int = 3000):
+        """Rebind toast message."""
+        msg = self.localisation.translate(key)
+        toast = Toast(msg, duration, self.active_toasts, self)
+        toast.show()
 
     def card_reset_all(self):
         """Reset all cards."""
