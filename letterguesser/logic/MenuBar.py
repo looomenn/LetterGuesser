@@ -4,13 +4,14 @@ import json
 from pathlib import Path
 from string import Template
 
-from PyQt6.QtCore import QObject
+from PyQt6.QtCore import QObject, QSettings
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QMenu, QMenuBar, QWidget
 
 from letterguesser.config import DEFAULT_LANGUAGE_CODE, DEFAULT_THEME, LANGUAGES
 from letterguesser.logic.utils import get_resource_path, compile_scss
-from letterguesser.styles.font import fonts
+
+from letterguesser.context import settings
 
 from .ExperimentManager import ExperimentManager
 from .Localisation import Localisation
@@ -18,8 +19,6 @@ from .Localisation import Localisation
 
 class MenuBar(QMenuBar):
     """Menu Bar."""
-
-    CONFIG_FILE = get_resource_path("settings.json")
 
     def __init__(
             self,
@@ -36,7 +35,7 @@ class MenuBar(QMenuBar):
 
         self.manager = manager
         self.localisation = localisation
-        self.preferences = self._load_preferences()
+        self.settings = settings
 
         # themes menu
         self.themes_menu = QMenu("Themes", self)
@@ -51,9 +50,8 @@ class MenuBar(QMenuBar):
         self._populate_languages_menu()
 
         self.localisation.bind(self.languages_menu, 'languages')
+        self._load_preferences()
 
-        self._apply_theme(self.preferences.get('theme', DEFAULT_THEME))
-        self.change_language(self.preferences.get('language', DEFAULT_LANGUAGE_CODE))
 
     def _populate_themes_menu(self) -> None:
         """Populate the themes."""
@@ -65,7 +63,7 @@ class MenuBar(QMenuBar):
             for theme_folder in themes_dir.iterdir():
                 if theme_folder.is_dir():
                     info_file = theme_folder / "info.json"
-                    theme_file = theme_folder / "theme.qss"
+                    theme_file = theme_folder / "theme.scss"
 
                     if not info_file.exists() or not theme_file.exists():
                         continue
@@ -109,6 +107,7 @@ class MenuBar(QMenuBar):
 
         :param theme: The name of the selected theme.
         """
+        self.settings.setValue('theme', theme)
         themes_path = get_resource_path('assets/themes')
         theme_folder = themes_path / theme
         try:
@@ -125,9 +124,6 @@ class MenuBar(QMenuBar):
 
             self.parent().setStyleSheet(qss_content)
 
-            self.preferences["theme"] = theme
-            self._save_preferences()
-
             for action in self.themes_menu.actions():
                 action.setChecked(
                     self.theme_mapping.get(theme) == action.text()
@@ -138,25 +134,17 @@ class MenuBar(QMenuBar):
         except Exception as e:
             print(f"Error applying '{theme}': {e}")
 
-    def _load_preferences(self) -> dict:
+    def _load_preferences(self) -> None:
         """
         Load user preferences from the configuration file.
 
         :return: Dictionary of user preferences.
         """
-        try:
-            with open(self.CONFIG_FILE, "r") as file:
-                return json.load(file)
-        except (FileNotFoundError, json.JSONDecodeError):
-            return {}
+        theme = self.settings.value('theme', DEFAULT_THEME)
+        self._apply_theme(theme)
 
-    def _save_preferences(self) -> None:
-        """Save user preferences to the configuration file."""
-        try:
-            with open(self.CONFIG_FILE, "w") as file:
-                json.dump(self.preferences, file, indent=4)
-        except Exception as e:
-            print(f"Error saving preferences: {e}")
+        lang = self.settings.value('language', DEFAULT_LANGUAGE_CODE)
+        self.change_language(lang)
 
     def change_language(self, language: str):
         """
@@ -164,13 +152,10 @@ class MenuBar(QMenuBar):
 
         :param language: 'English' or 'Ukrainian'.
         """
+        self.settings.setValue('language', language)
+
         self.localisation.load_language(language)
-
         self.manager.reset_experiment()
-
-        self.preferences['language'] = language
-
-        self._save_preferences()
 
         for action in self.languages_menu.actions():
             action.setChecked(action.text() == LANGUAGES.get(language))
