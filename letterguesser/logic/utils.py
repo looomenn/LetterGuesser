@@ -8,8 +8,10 @@ import sass
 
 import re
 import sys
+import json
 from pathlib import Path
 
+from PyQt6.QtCore import QSettings
 
 def get_resource_path(relative_path: str | Path) -> Path:
     """
@@ -74,3 +76,25 @@ def compile_scss(theme_folder: Path, primitives: Path) -> dict:
         variables[key] = value
 
     return variables
+
+
+def get_color_scheme():
+    """Return current theme color scheme."""
+    settings = QSettings('ange1o', 'LetterGuesser')
+    theme = settings.value('theme', type=str)
+
+    theme_info_path = Path(get_resource_path(f'assets/themes/{theme}/info.json'))
+
+    if not theme_info_path.exists():
+        raise FileNotFoundError(f'Theme info file not found: {theme_info_path}')
+
+    with open(theme_info_path, 'r', encoding='utf-8') as file:
+        theme_info = json.load(file)
+
+    color_scheme = theme_info.get('color_scheme')
+
+    if color_scheme is None:
+       raise KeyError(f'Theme info file does not contain a color scheme '
+                       f'indicator: {theme_info_path}')
+
+    return color_scheme
