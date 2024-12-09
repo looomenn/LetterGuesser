@@ -97,7 +97,6 @@ class ExperimentManager:
 
         :param value: String representation of the new n-gram order.
         """
-        print(value)
         value = value.split(' ')[0].strip()
         self.ngram_order = int(value)
 
@@ -136,6 +135,10 @@ class ExperimentManager:
 
         # get random text part
         self.text = self.get_text(self.localisation.get_locale())
+
+        # table init
+        self.table_events['init'].notify(table_name='prob_table')
+        self.table_events['init'].notify(table_name='attempts_table')
 
         # enabling reset button
         self.button_events['state_change'].notify(
@@ -302,8 +305,6 @@ class ExperimentManager:
 
         if next_char and user_input == next_char:
 
-            self.table_events['init'].notify(table_name='prob_table')
-
             self.attempt_counts[self.attempts - 1] += 1
 
             self.calc_prob()
@@ -313,11 +314,18 @@ class ExperimentManager:
                 state='enable'
             )
 
+            binary_string = ''.join(
+                '1' if i == self.attempts - 1 else '0' for i in range(len(alphabet))
+            )
+
             self.table_events['update'].notify(
                 table_name='attempts_table',
-                update_method='add_char',
-                char=next_char,
-                attempt=self.attempts,
+                update_method='add_row',
+                row_data=[
+                    self.attempts,
+                    next_char,
+                    binary_string
+                ]
             )
 
             self.block_events['rebind'].notify(block_name='status', key='win')
@@ -347,7 +355,7 @@ class ExperimentManager:
                 prob = count / sum(self.attempt_counts)
                 self.table_events['update'].notify(
                     table_name='prob_table',
-                    update_method='update_prob',
-                    index=i+1,
-                    new_value=round(prob, 4)
+                    update_method='set_cell_value',
+                    row=i,
+                    values=[i, round(prob, 4)]
                 )
