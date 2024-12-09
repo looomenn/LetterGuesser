@@ -13,7 +13,6 @@ from letterguesser.gui.widgets.Toast import Toast
 from letterguesser.context import localisation, manager, logger
 from letterguesser.gui.frames.InputFrame import InputFrame
 
-from letterguesser.logic.utils import get_color_scheme
 
 class LeftFrame(QFrame):
     """
@@ -35,7 +34,6 @@ class LeftFrame(QFrame):
         self.manager = manager
         self.log = logger
 
-        # layout
         self.layout = QVBoxLayout(self)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.layout.setSpacing(16)
@@ -59,7 +57,6 @@ class LeftFrame(QFrame):
         self.manager.card_events['reset'].subscribe(self.card_reset)
 
         self.manager.block_events['rebind'].subscribe(self.toast_show)
-        # self.manager.block_events['reset'].subscribe(self.status_reset)
 
     def toast_show(self, block_name, key: str, duration: int = 3000):
         """Rebind toast message."""
@@ -81,7 +78,8 @@ class LeftFrame(QFrame):
 
         if not isinstance(value, card.get_type()):
             self.log.error(f'Invalid value type for card "{card_name}". '
-                           f'Should be: {card.get_type()} ')
+                           f'Should be: {card.get_type()} '
+                           )
             return
 
         card.update_value(value)
