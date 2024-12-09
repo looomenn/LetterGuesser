@@ -5,7 +5,7 @@ This file defines global constants used throughout the application, including de
 settings, supported languages, and alphabets.
 """
 APP_TITLE: str = 'LetterGuesser'
-APP_SIZE: tuple[int, int] = (1300, 740)
+APP_SIZE: tuple[int, int] = (1400, 740)
 DEFAULT_THEME: str = 'dark'
 
 DEFAULT_LANGUAGE: str = 'Ukrainian'  # Ukrainian / English
