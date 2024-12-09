@@ -47,7 +47,7 @@ QMenu::item:selected{
 }
 
 #Container {
-    padding: 24px;
+    padding: 16px;
 }
 
 #Card{
@@ -70,7 +70,7 @@ QLineEdit {
     color: ${fgColor_default};
     border: ${borderWidth_thin} solid ${control_borderColor_rest};
     border-radius: ${borderRadius_medium};
-    max-width: 440px;
+    max-width: 500px;
 }
 
 QLineEdit:disabled{
@@ -222,4 +222,59 @@ QComboBox:disabled {
     border:  ${borderWidth_thin} solid ${borderColor_default};
     padding: 12px;
     border-radius: ${borderRadius_large};
+}
+
+#FrameTitle{
+    font-weight: ${base_text_weight_semibold};
+    font-size: ${text_title_size_small};
+}
+
+QTableWidget{
+    border: ${borderWidth_thin} solid ${borderColor_default};
+    gridline-color: ${borderColor_default};
+}
+
+QTableWidget > QHeaderView {
+    font-weight: ${base_text_weight_semibold};
+}
+
+QTableWidget QHeaderView::section {
+    padding: 4px;
+}
+
+
+QTableWidget::item{
+    border: none;
+}
+
+QScrollBar:vertical {
+    border: none;
+    background: ${bgColor_muted};
+    width: 10px;
+    margin: 0px 0px 0px 0px;
+}
+
+QScrollBar::handle:vertical {
+    background: ${bgColor_neutral_muted};
+}
+
+QScrollBar::handle:vertical:hover {
+    background: ${bgColor_accent_muted};
+}
+
+QScrollBar::handle:vertical:pressed {
+    background: ${bgColor_accent_emphasis};
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    background: none;
+    height: 0px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+#FramePlaceholder {
+    color: ${fgColor_muted};
 }
