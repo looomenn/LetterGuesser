@@ -22,7 +22,6 @@ class Toast(QFrame):
         """
         super().__init__(parent, **kwargs)
 
-
         self.fade_out_animation = None
         self.fade_in_animation = None
         self.toasts_list = toasts_list
