@@ -40,6 +40,8 @@ class ComboBox(QComboBox):
         self.localisation = localisation
         self.command = command
 
+        self.setMinimumWidth(120)
+
         self.addItems(values)
 
         if values:
@@ -48,8 +50,6 @@ class ComboBox(QComboBox):
         self.localisation.bind(self, label, self.update_loc)
 
         self.currentTextChanged.connect(self.on_selection_changed)
-
-        self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
     def on_selection_changed(self, value: str) -> None:
         """
@@ -80,6 +80,11 @@ class ComboBox(QComboBox):
         current_index = self.currentIndex()
         formatted_values = [f"{val} {text}" for val in self.values]
 
+        # signal blocking to prevent buffer overflow
+
+        self.blockSignals(True)
         self.clear()
         self.addItems(formatted_values)
+        self.blockSignals(False)
+
         self.setCurrentIndex(current_index)
