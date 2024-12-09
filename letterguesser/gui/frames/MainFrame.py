@@ -27,7 +27,7 @@ class MainFrame(BaseFrame):
         """
         super().__init__(parent, transparent_bg=True, **kwargs)
 
-        self.left_frame = LeftFrame(self)
+        self.left_frame = LeftFrame()
         self.add_widget(
             self.left_frame,
             side='left',
@@ -36,7 +36,7 @@ class MainFrame(BaseFrame):
             padx=(pad_0, pad_4)
         )
 
-        self.right_frame = RightFrame(self)
+        self.right_frame = RightFrame()
         self.add_widget(
             self.right_frame,
             side='right',
