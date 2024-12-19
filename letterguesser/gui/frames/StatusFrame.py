@@ -3,46 +3,44 @@ StatusFrame for displaying application status information.
 
 This frame shows the current status or message to the user.
 """
+from typing import Optional, Callable
 
-from letterguesser.gui.widgets import TextBlockSegment
-from letterguesser.styles.padding import pad_5
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QFrame, QVBoxLayout
 
-from .BaseFrame import BaseFrame
+from letterguesser.gui.widgets import InputBlock
+
+from letterguesser.context import localisation, manager
 
 
-class StatusFrame(BaseFrame):
-    """
-    Frame for displaying status updates.
+class StatusFrame(QFrame):
+    """Frame with input fields and controls for managing user input."""
 
-    Shows current application status using a text block.
-    """
-
-    def __init__(
-            self,
-            parent,
-            **kwargs
-    ):
+    def __init__(self, **kwargs):
         """
-        Initialize StatusFrame with a status display.
+        Initialize InputFrame with input fields and action buttons.
 
-        :param parent: The parent tkinter object.
-        :param kwargs: Additional keyword arguments for frame configuration.
+        :param parent: Parent tkinter object for the frame.
         """
-        super().__init__(parent, **kwargs)
+        super().__init__(**kwargs)
 
-        self.status = TextBlockSegment(
-            parent=self,
+        self.setObjectName('Container')
+
+        self.manager = manager
+        self.localisation = localisation
+
+        # layout
+        self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.layout.setSpacing(24)
+
+        self.status = InputBlock(
             localisation_key='status_label',
-            initial_text='random_text'
+            placeholder_key='no_input',
+            is_disabled=True
         )
-
-        self.add_widget(
-            self.status,
-            side='top',
-            expand=False,
-            fill='x',
-            padx=pad_5, pady=pad_5
-        )
+        self.layout.addWidget(self.status)
 
         self.local_blocks = {
             'status': self.status
