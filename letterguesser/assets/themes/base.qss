@@ -75,8 +75,8 @@ QLineEdit {
 
 QLineEdit:disabled{
     background-color: ${control_bgColor_disabled};
-    border: ${borderWidth_thin} solid ${control_borderColor_disabled};
-    color: ${fgColor_disabled};
+    border: ${borderWidth_thin} solid ${control_borderColor_rest};
+    color: ${fgColor_muted};
 }
 
 #form-group > QLabel {
@@ -229,22 +229,24 @@ QComboBox:disabled {
     font-size: ${text_title_size_small};
 }
 
-QTableWidget{
-    border: ${borderWidth_thin} solid ${borderColor_default};
-    gridline-color: ${borderColor_default};
+QTableWidget {
+    alternate-background-color: ${bgColor_muted};
+    border: ${borderWidth_thin} solid  ${borderColor_default};
 }
 
-QTableWidget > QHeaderView {
+QTableWidget QHeaderView {
     font-weight: ${base_text_weight_semibold};
 }
 
 QTableWidget QHeaderView::section {
+    border: none;
+    border-bottom: ${borderWidth_thin} solid  ${borderColor_default};
     padding: 4px;
+    background: ${bgColor_inset};
 }
 
-
-QTableWidget::item{
-    border: none;
+QTableWidget::item {
+    border-bottom: ${borderWidth_thin} solid  ${borderColor_default};
 }
 
 QScrollBar:vertical {
