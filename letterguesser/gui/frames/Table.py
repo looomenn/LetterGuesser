@@ -54,12 +54,18 @@ class Table(QFrame):
         self.table.setHorizontalHeaderLabels(headers_keys)
         self.table.verticalHeader().setVisible(False)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.table.setAlternatingRowColors(True)
+
+        self.table.setShowGrid(False)
 
         self.table.setSelectionMode(QTableWidget.SelectionMode.NoSelection)
         self.table.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
-        self.table.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Stretch
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        header.setDefaultAlignment(
+            Qt.AlignmentFlag.AlignLeft |
+            Qt.AlignmentFlag.AlignVCenter
         )
 
         self.label = QLabel()
@@ -81,13 +87,17 @@ class Table(QFrame):
         self.layout.addWidget(self.placeholder)
 
         for i, key in enumerate(headers_keys):
+
+            if 'value' in key:
+                header.setSectionResizeMode(i, QHeaderView.ResizeMode.ResizeToContents)
+
             self.localisation.bind(
                 self,
                 key,
                 lambda text, index=i: self.update_header(index, text)
             )
-
         self._toggle_placeholder()
+        self._apply_autofill()
 
     def init(self):
         """Reinit table."""
@@ -99,12 +109,13 @@ class Table(QFrame):
         """Reset table."""
         self.table.clearContents()
         self.table.setRowCount(0)
-        self._apply_autofill()
         self._toggle_placeholder()
+        self._apply_autofill()
 
     def update_header(self, index: int, text: str):
         """Bind headers localisation."""
         self.headers[index] = text
+        print(self.headers)
         self.table.setHorizontalHeaderLabels(self.headers)
 
     def add_row(self, row_data):
@@ -118,6 +129,7 @@ class Table(QFrame):
 
     def set_cell_value(self, row: int, values: list[str | int]):
         """Set cell value."""
+
         if row >= self.table.rowCount():
             self.table.setRowCount(row + 1)
 
@@ -172,5 +184,8 @@ class Table(QFrame):
             display_value = display_value[:5] + '...'
 
         item = QTableWidgetItem(str(display_value))
-        item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+        item.setTextAlignment(
+            Qt.AlignmentFlag.AlignLeft |
+            Qt.AlignmentFlag.AlignVCenter
+        )
         self.table.setItem(row, col, item)
