@@ -128,7 +128,7 @@ class ExperimentManager:
 
         return None
 
-    def start_experiment(self) -> None:
+    def start_experiment(self, reinit_tables=True) -> None:
         """Initialize and start the experiment, setting up necessary states."""
         self.is_active = True
         self.attempts = 0
@@ -137,8 +137,9 @@ class ExperimentManager:
         self.text = self.get_text(self.localisation.get_locale())
 
         # table init
-        self.table_events['init'].notify(table_name='prob_table')
-        self.table_events['init'].notify(table_name='attempts_table')
+        if reinit_tables:
+            self.table_events['init'].notify(table_name='prob_table')
+            self.table_events['init'].notify(table_name='attempts_table')
 
         # enabling reset button
         self.button_events['state_change'].notify(
@@ -171,6 +172,8 @@ class ExperimentManager:
         self.visible_text = self.full_text[:self.ngram_order]
         self.next_char = self.get_next_char()
 
+        self.logger.debug(f'next char: {self.next_char}')
+
         # display random(given) text in the TextBlockSegment
         self.block_events['update'].notify(
             block_name='random_text',
@@ -202,7 +205,7 @@ class ExperimentManager:
         self.card_events['reset'].notify(card_name='card_attempts')
         self.card_events['reset'].notify(card_name='card_last_char')
 
-        self.start_experiment()
+        self.start_experiment(reinit_tables=False)
 
     def reset_experiment(self):
         """Reset the experiment state and UI components."""
@@ -353,9 +356,10 @@ class ExperimentManager:
         for i, count in enumerate(self.attempt_counts):
             if count > 0:
                 prob = count / sum(self.attempt_counts)
+                print(i)
                 self.table_events['update'].notify(
                     table_name='prob_table',
                     update_method='set_cell_value',
                     row=i,
-                    values=[i, round(prob, 4)]
+                    values=[i+1, round(prob, 4)]
                 )
