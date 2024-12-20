@@ -115,7 +115,6 @@ class Table(QFrame):
     def update_header(self, index: int, text: str):
         """Bind headers localisation."""
         self.headers[index] = text
-        print(self.headers)
         self.table.setHorizontalHeaderLabels(self.headers)
 
     def add_row(self, row_data):
