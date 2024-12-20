@@ -13,6 +13,7 @@ from pathlib import Path
 
 from PyQt6.QtCore import QSettings
 
+
 def get_resource_path(relative_path: str | Path) -> Path:
     """
     Get the absolute path for a resource, compatible with PyInstaller.
