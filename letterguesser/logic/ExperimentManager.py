@@ -172,8 +172,6 @@ class ExperimentManager:
         self.visible_text = self.full_text[:self.ngram_order]
         self.next_char = self.get_next_char()
 
-        self.logger.debug(f'next char: {self.next_char}')
-
         # display random(given) text in the TextBlockSegment
         self.block_events['update'].notify(
             block_name='random_text',
@@ -269,23 +267,23 @@ class ExperimentManager:
 
         if user_input not in alphabet:
             self.block_events['rebind'].notify(block_name='status', key='invalid_char')
-            return 'invalid'
+            return '[!] Given char is not in the alphabet'
 
         if user_input == '':
-            return 'invalid'
+            return '[!] Input can\'t be blank'
 
         if user_input == ' ':
             user_input = '_'
 
         if user_input in self.used_letters:
             self.block_events['rebind'].notify(block_name='status', key='used_char')
-            return 'invalid'
+            return '[!] Already used char!'
 
         self.used_letters.append(user_input)
         self.attempts += 1
 
         if len(self.used_letters) > len(alphabet):
-            return 'invalid'  # should never be reached
+            return '[!] HOW???'  # should never be reached
 
         # updating cards
         self.card_events['update'].notify(
@@ -356,10 +354,9 @@ class ExperimentManager:
         for i, count in enumerate(self.attempt_counts):
             if count > 0:
                 prob = count / sum(self.attempt_counts)
-                print(i)
                 self.table_events['update'].notify(
                     table_name='prob_table',
                     update_method='set_cell_value',
                     row=i,
-                    values=[i+1, round(prob, 4)]
+                    values=[i+1, round(prob, 6)]
                 )
