@@ -1,5 +1,5 @@
 """AutoPlayer module."""
-
+import math
 import os
 import random
 from datetime import datetime
@@ -40,6 +40,7 @@ class AutoPlayer:
 
         self.global_used_letters = []
         self.global_probabilities = {}
+        self.global_entropy_bounds = ()
 
         if not os.path.exists(self.save_folder):
             os.makedirs(self.save_folder)
@@ -94,6 +95,7 @@ class AutoPlayer:
             "success": False,
             "correct_char": '',
             "text": self.manager.visible_text,
+            "entropy_bounds": None
         }
 
         print(f'[Experiment: {data["experiment_number"]}] Starting '
@@ -130,8 +132,20 @@ class AutoPlayer:
             data["attempts"] = self.manager.attempts
 
             self.update_probabilities()
+            data["entropy_bounds"] = self.global_entropy_bounds
 
         return data
+
+    @staticmethod
+    def calc_entropy_bounds(probs, alphabet_size):
+        """Calculate entropy bounds."""
+        observed = -sum(p * math.log2(p) for p in probs if p > 0)
+
+        lower = observed
+        upper = observed + math.log2(alphabet_size)
+
+        return lower, upper
+
 
     def update_probabilities(self):
         """Update the probabilities of the guesses."""
@@ -145,6 +159,17 @@ class AutoPlayer:
         else:
             self.global_probabilities = {i + 1: 0 for i in
                                          range(len(self.manager.attempt_counts))}
+
+        probs = [prob for prob in self.global_probabilities.values() if prob > 0]
+        if probs:
+            observed = -sum(p * math.log2(p) for p in probs)
+        else:
+            observed = 0
+
+        lower = observed
+        upper = observed + math.log2(len(self.alphabet))
+
+        self.global_entropy_bounds = (lower, upper)
 
     def make_guess(self, data) -> tuple[str, str]:
         """Make a guess."""
@@ -174,8 +199,13 @@ class AutoPlayer:
                 file.write(f"\t\tCorrect char: {experiment['correct_char']}\n")
                 file.write(f"\t\tUsed Letters: {', '.join(experiment['used_letters'])}\n")
                 file.write(f"\t\tText: {part['text']}\n")
+                if experiment['entropy_bounds']:
+                    h_min, h_max = experiment['entropy_bounds']
+                    file.write(f'\t\tEntropy bounds: {h_min:.4f} < H < {h_max:.4f}\n')
                 file.write("\n")
-
+            file.write("\nEntropy:\n")
+            h_min, h_max = self.global_entropy_bounds
+            file.write(f'\tEntropy bounds: {h_min:.4f} < H < {h_max:.4f}\n')
             file.write("\nGlobal Guessed Letters (Session):\n")
             for letter_info in self.global_used_letters:
                 file.write(
